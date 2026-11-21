@@ -1,0 +1,642 @@
+{
+  "accountBalance": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "credits_remaining": 18342
+    },
+    "responseExamples": {}
+  },
+  "accountUsage": {
+    "params": {
+      "from": "2026-11-20",
+      "to": "2026-11-21"
+    },
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "from": "2026-11-20",
+      "to": "2026-11-21",
+      "days": [
+        {
+          "date": "2026-11-20",
+          "endpoint": "/v1/nutrition/text",
+          "calls": 412,
+          "credits": 412
+        },
+        {
+          "date": "2026-11-20",
+          "endpoint": "/v1/nutrition/photo",
+          "calls": 58,
+          "credits": 116
+        },
+        {
+          "date": "2026-11-21",
+          "endpoint": "/v1/nutrition/text",
+          "calls": 97,
+          "credits": 97
+        }
+      ],
+      "total": {
+        "calls": 567,
+        "credits": 625
+      }
+    },
+    "responseExamples": {}
+  },
+  "catalogDelete": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "catalogExport": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "catalogFoodsList": {
+    "params": {
+      "q": "linsen"
+    },
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "items": [
+        {
+          "id": "rezept-linsensuppe",
+          "name": "Linsensuppe nach Hausrezept",
+          "per_100g": {
+            "kcal": 92,
+            "protein_g": 5.4,
+            "carbs_g": 11.8,
+            "fat_g": 2
+          }
+        }
+      ]
+    },
+    "responseExamples": {}
+  },
+  "catalogFoodsPut": {
+    "params": {},
+    "request": {
+      "foods": [
+        {
+          "id": "rezept-linsensuppe",
+          "name": "Linsensuppe nach Hausrezept",
+          "per_100g": {
+            "kcal": 92,
+            "protein_g": 5.4,
+            "carbs_g": 11.8,
+            "fat_g": 2
+          }
+        },
+        {
+          "id": "sku-10482",
+          "name": "Haferdrink, Hausmarke",
+          "per_100g": {
+            "kcal": 46,
+            "protein_g": 0.3,
+            "carbs_g": 8.1,
+            "fat_g": 1.3
+          },
+          "barcode": "4000000000017"
+        }
+      ]
+    },
+    "requestExamples": {},
+    "response": {
+      "saved": [
+        {
+          "id": "rezept-linsensuppe",
+          "result": "created"
+        },
+        {
+          "id": "sku-10482",
+          "result": "replaced"
+        }
+      ]
+    },
+    "responseExamples": {}
+  },
+  "catalogFoodsGet": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "id": "rezept-linsensuppe",
+      "name": "Linsensuppe nach Hausrezept",
+      "per_100g": {
+        "kcal": 92,
+        "protein_g": 5.4,
+        "carbs_g": 11.8,
+        "fat_g": 2
+      }
+    },
+    "responseExamples": {}
+  },
+  "catalogFoodsDelete": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "id": "sku-10482",
+      "deleted": true
+    },
+    "responseExamples": {}
+  },
+  "catalogRecipesList": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "catalogRecipesPut": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "catalogRecipesGet": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "catalogRecipesDelete": {
+    "params": {},
+    "request": null,
+    "requestExamples": {},
+    "response": null,
+    "responseExamples": {}
+  },
+  "foodsBarcode": {
+    "params": {
+      "code": "4000000000000",
+      "lang": "de"
+    },
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "code": "4000000000000",
+      "name": "Beispielprodukt Haferdrink",
+      "per_100g": {
+        "kcal": 46,
+        "protein_g": 0.3,
+        "carbs_g": 8.1,
+        "fat_g": 1.3
+      },
+      "source": "open_food_facts",
+      "license": "ODbL 1.0",
+      "attribution": "© Open Food Facts contributors"
+    },
+    "responseExamples": {}
+  },
+  "foodsSearch": {
+    "params": {
+      "q": "apple",
+      "lang": "de"
+    },
+    "request": null,
+    "requestExamples": {},
+    "response": {
+      "query": "apple",
+      "results": [
+        {
+          "name": "Apples, raw, with skin",
+          "per_100g": {
+            "kcal": 52,
+            "protein_g": 0.3,
+            "carbs_g": 13.8,
+            "fat_g": 0.2
+          },
+          "source": "usda_fdc",
+          "license": "CC0"
+        }
+      ]
+    },
+    "responseExamples": {}
+  },
+  "goalsCalculate": {
+    "params": {},
+    "request": {
+      "sex": "female",
+      "weight_kg": 68,
+      "height_cm": 170,
+      "age": 31,
+      "activity_level": "active",
+      "goal": "lose_weight"
+    },
+    "requestExamples": {},
+    "response": {
+      "calories_kcal": 1711,
+      "protein_g": 150,
+      "carbs_g": 150,
+      "fat_g": 57,
+      "water_ml": 2500,
+      "basal_metabolic_rate_kcal": 1427,
+      "method": "mifflin_st_jeor"
+    },
+    "responseExamples": {}
+  },
+  "nutritionCorrect": {
+    "params": {},
+    "request": {
+      "items": [
+        {
+          "name": "Vollkornbrot mit Gouda und Apfel",
+          "grams": 250,
+          "per_100g": {
+            "kcal": 159,
+            "protein_g": 7,
+            "carbs_g": 20.2,
+            "fat_g": 5.4
+          },
+          "source": "model"
+        },
+        {
+          "name": "Butter, salted",
+          "grams": 10,
+          "per_100g": {
+            "kcal": 717,
+            "protein_g": 0.9,
+            "carbs_g": 0.1,
+            "fat_g": 81.1
+          },
+          "source": "usda_fdc"
+        }
+      ],
+      "lang": "de"
+    },
+    "requestExamples": {},
+    "response": {
+      "items": [
+        {
+          "name": "Vollkornbrot mit Gouda und Apfel",
+          "grams": {
+            "value": 250,
+            "low": 250,
+            "high": 250
+          },
+          "kcal": {
+            "value": 398,
+            "low": 398,
+            "high": 398
+          },
+          "protein_g": 17.5,
+          "carbs_g": 50.5,
+          "fat_g": 13.5,
+          "per_100g": {
+            "kcal": 159,
+            "protein_g": 7,
+            "carbs_g": 20.2,
+            "fat_g": 5.4
+          },
+          "source": "model"
+        },
+        {
+          "name": "Butter, salted",
+          "grams": {
+            "value": 10,
+            "low": 10,
+            "high": 10
+          },
+          "kcal": {
+            "value": 72,
+            "low": 72,
+            "high": 72
+          },
+          "protein_g": 0.1,
+          "carbs_g": 0,
+          "fat_g": 8.1,
+          "per_100g": {
+            "kcal": 717,
+            "protein_g": 0.9,
+            "carbs_g": 0.1,
+            "fat_g": 81.1
+          },
+          "source": "usda_fdc"
+        }
+      ],
+      "total": {
+        "kcal": {
+          "value": 470,
+          "low": 470,
+          "high": 470
+        },
+        "protein_g": 17.6,
+        "carbs_g": 50.5,
+        "fat_g": 21.6
+      }
+    },
+    "responseExamples": {}
+  },
+  "nutritionPhoto": {
+    "params": {},
+    "request": {
+      "image_base64": "<Bild als Base64>",
+      "lang": "de",
+      "tier": "economy"
+    },
+    "requestExamples": {
+      "custom_foods": {
+        "image_base64": "<Bild als Base64>",
+        "lang": "de",
+        "tier": "economy",
+        "custom_foods": [
+          {
+            "name": "Steak mit Kürbis und Rucola, Mittagskarte",
+            "per_100g": {
+              "kcal": 142,
+              "protein_g": 9,
+              "carbs_g": 6,
+              "fat_g": 9.2
+            }
+          }
+        ]
+      }
+    },
+    "response": {
+      "dish": "Sliced steak with roasted acorn squash and arugula salad",
+      "grams": {
+        "value": 275,
+        "low": 162,
+        "high": 468
+      },
+      "kcal": {
+        "value": 300,
+        "low": 177,
+        "high": 511
+      },
+      "protein_g": 26.5,
+      "carbs_g": 15,
+      "fat_g": 14.5,
+      "per_100g": {
+        "kcal": 109.1,
+        "protein_g": 9.64,
+        "carbs_g": 5.45,
+        "fat_g": 5.27
+      },
+      "components": [
+        {
+          "name": "Sliced steak with roasted acorn squash and arugula salad",
+          "grams": {
+            "value": 275,
+            "low": 162,
+            "high": 468
+          },
+          "kcal": {
+            "value": 300,
+            "low": 177,
+            "high": 511
+          },
+          "protein_g": 26.5,
+          "carbs_g": 15,
+          "fat_g": 14.5,
+          "per_100g": {
+            "kcal": 109.1,
+            "protein_g": 9.64,
+            "carbs_g": 5.45,
+            "fat_g": 5.27
+          }
+        }
+      ],
+      "components_granularity": "dish",
+      "confidence": 0.59,
+      "needs_review": false,
+      "source": "model",
+      "beta": true,
+      "tier": "economy",
+      "model": "glm-5.3-flash",
+      "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"
+    },
+    "responseExamples": {
+      "custom_foods": {
+        "dish": "Steak mit Kürbis und Rucola, Mittagskarte",
+        "grams": {
+          "value": 270,
+          "low": 193,
+          "high": 378
+        },
+        "kcal": {
+          "value": 383,
+          "low": 274,
+          "high": 537
+        },
+        "protein_g": 24.3,
+        "carbs_g": 16.2,
+        "fat_g": 24.8,
+        "per_100g": {
+          "kcal": 142,
+          "protein_g": 9,
+          "carbs_g": 6,
+          "fat_g": 9.2
+        },
+        "components": [
+          {
+            "name": "Steak mit Kürbis und Rucola, Mittagskarte",
+            "grams": {
+              "value": 270,
+              "low": 193,
+              "high": 378
+            },
+            "kcal": {
+              "value": 383,
+              "low": 274,
+              "high": 537
+            },
+            "protein_g": 24.3,
+            "carbs_g": 16.2,
+            "fat_g": 24.8,
+            "per_100g": {
+              "kcal": 142,
+              "protein_g": 9,
+              "carbs_g": 6,
+              "fat_g": 9.2
+            }
+          }
+        ],
+        "components_granularity": "dish",
+        "confidence": 0.72,
+        "needs_review": false,
+        "source": "customer_inline",
+        "beta": true,
+        "tier": "economy",
+        "model": "glm-5.3-flash",
+        "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"
+      }
+    }
+  },
+  "nutritionText": {
+    "params": {},
+    "request": {
+      "text": "2 Scheiben Vollkornbrot mit Gouda und ein Apfel",
+      "lang": "de",
+      "tier": "economy"
+    },
+    "requestExamples": {
+      "custom_foods": {
+        "text": "Linsensuppe",
+        "lang": "de",
+        "tier": "economy",
+        "custom_foods": [
+          {
+            "name": "Linsensuppe nach Hausrezept",
+            "per_100g": {
+              "kcal": 92,
+              "protein_g": 5.4,
+              "carbs_g": 11.8,
+              "fat_g": 2
+            },
+            "grams": 350
+          }
+        ]
+      }
+    },
+    "response": {
+      "items": [
+        {
+          "name": "Vollkornbrot mit Gouda und Apfel",
+          "quantity": "300 g",
+          "grams": {
+            "value": 300,
+            "low": 273,
+            "high": 330
+          },
+          "kcal": {
+            "value": 477,
+            "low": 434,
+            "high": 525
+          },
+          "protein_g": 21,
+          "carbs_g": 60.6,
+          "fat_g": 16.2,
+          "per_100g": {
+            "kcal": 159,
+            "protein_g": 7,
+            "carbs_g": 20.2,
+            "fat_g": 5.4
+          },
+          "components": [
+            {
+              "name": "Vollkornbrot mit Gouda und Apfel",
+              "grams": {
+                "value": 300,
+                "low": 273,
+                "high": 330
+              },
+              "kcal": {
+                "value": 477,
+                "low": 434,
+                "high": 525
+              },
+              "protein_g": 21,
+              "carbs_g": 60.6,
+              "fat_g": 16.2,
+              "per_100g": {
+                "kcal": 159,
+                "protein_g": 7,
+                "carbs_g": 20.2,
+                "fat_g": 5.4
+              }
+            }
+          ],
+          "components_granularity": "dish",
+          "confidence": 0.91,
+          "needs_review": false,
+          "source": "model"
+        }
+      ],
+      "total": {
+        "kcal": {
+          "value": 477,
+          "low": 434,
+          "high": 525
+        },
+        "protein_g": 21,
+        "carbs_g": 60.6,
+        "fat_g": 16.2
+      },
+      "tier": "economy",
+      "model": "glm-5.3-flash",
+      "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)"
+    },
+    "responseExamples": {
+      "custom_foods": {
+        "items": [
+          {
+            "name": "Linsensuppe nach Hausrezept",
+            "quantity": "350 g",
+            "grams": {
+              "value": 350,
+              "low": 350,
+              "high": 350
+            },
+            "kcal": {
+              "value": 322,
+              "low": 322,
+              "high": 322
+            },
+            "protein_g": 18.9,
+            "carbs_g": 41.3,
+            "fat_g": 7,
+            "per_100g": {
+              "kcal": 92,
+              "protein_g": 5.4,
+              "carbs_g": 11.8,
+              "fat_g": 2
+            },
+            "components": [
+              {
+                "name": "Linsensuppe nach Hausrezept",
+                "grams": {
+                  "value": 350,
+                  "low": 350,
+                  "high": 350
+                },
+                "kcal": {
+                  "value": 322,
+                  "low": 322,
+                  "high": 322
+                },
+                "protein_g": 18.9,
+                "carbs_g": 41.3,
+                "fat_g": 7,
+                "per_100g": {
+                  "kcal": 92,
+                  "protein_g": 5.4,
+                  "carbs_g": 11.8,
+                  "fat_g": 2
+                }
+              }
+            ],
+            "components_granularity": "dish",
+            "confidence": 1,
+            "needs_review": false,
+            "source": "customer_inline"
+          }
+        ],
+        "total": {
+          "kcal": {
+            "value": 322,
+            "low": 322,
+            "high": 322
+          },
+          "protein_g": 18.9,
+          "carbs_g": 41.3,
+          "fat_g": 7
+        },
+        "tier": "economy",
+        "model": "glm-5.3-flash",
+        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)"
+      }
+    }
+  }
+}

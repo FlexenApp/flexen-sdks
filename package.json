@@ -1,0 +1,23 @@
+{
+  "name": "flexen-sdks",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/ts"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "contract:pull": "tsx scripts/pull-contract.ts",
+    "generate": "node scripts/generate.mjs",
+    "check:contract": "node scripts/check-contract.mjs",
+    "test:scripts": "node --test scripts/check-contract.test.mjs",
+    "test:ts": "npm test -w @flexen/api",
+    "test:python": "cd packages/python && .venv/bin/python -m pytest -q",
+    "build:ts": "npm run build -w @flexen/api"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}

@@ -1,0 +1,1926 @@
+{
+  "source": {
+    "repo": "web-relaunch-2",
+    "files": [
+      "src/content/developers/api.ts",
+      "src/content/developers/openapi.ts"
+    ],
+    "commit": "2892864f87dc115ca6e1fd4ae0ede5063a5924c7",
+    "dirty": false
+  },
+  "info": {
+    "title": "Flexen API",
+    "version": "0.1.0-draft"
+  },
+  "operations": [
+    {
+      "operationId": "accountBalance",
+      "id": "account-balance",
+      "method": "GET",
+      "path": "/v1/account/balance",
+      "state": "planned",
+      "credits": 0,
+      "tag": "account",
+      "summary": "Get the current balance in credits. Credits reserved for calls that are still running are not yet deducted from it.",
+      "parameters": [],
+      "requestSchema": null,
+      "responseSchema": "AccountBalance",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "accountUsage",
+      "id": "account-usage",
+      "method": "GET",
+      "path": "/v1/account/usage",
+      "state": "planned",
+      "credits": 0,
+      "tag": "account",
+      "summary": "Get usage per day and endpoint for a period of at most 92 days: calls and credits deducted.",
+      "parameters": [
+        {
+          "name": "from",
+          "in": "query",
+          "required": true,
+          "description": "First day of the period, YYYY-MM-DD, UTC, inclusive.",
+          "schema": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": true,
+          "description": "Last day of the period, YYYY-MM-DD, UTC, inclusive. Not before from. The period spans at most 92 days, both ends included; above that, the API answers with 422 invalid_request.",
+          "schema": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "AccountUsage",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogDelete",
+      "id": "catalog-delete",
+      "method": "DELETE",
+      "path": "/v1/catalog",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Delete the whole catalog, foods and recipes.",
+      "parameters": [],
+      "requestSchema": null,
+      "responseSchema": "CatalogCleared",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogExport",
+      "id": "catalog-export",
+      "method": "GET",
+      "path": "/v1/catalog/export",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Export the whole catalog as JSON.",
+      "parameters": [],
+      "requestSchema": null,
+      "responseSchema": "CatalogExport",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogFoodsList",
+      "id": "catalog-foods-list",
+      "method": "GET",
+      "path": "/v1/catalog/foods",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "List and search the foods in your catalog.",
+      "parameters": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "description": "Optional search term. Without it, all entries are listed.",
+          "schema": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "description": "Value of next_cursor from the previous page.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogFoodList",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogFoodsPut",
+      "id": "catalog-foods-put",
+      "method": "POST",
+      "path": "/v1/catalog/foods",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Create or replace foods, one or several at once. The same id replaces the entry.",
+      "parameters": [],
+      "requestSchema": "CatalogFoodsRequest",
+      "responseSchema": "CatalogSaveResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogFoodsGet",
+      "id": "catalog-foods-get",
+      "method": "GET",
+      "path": "/v1/catalog/foods/{id}",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Get one food.",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Your id of the food.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogFood",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogFoodsDelete",
+      "id": "catalog-foods-delete",
+      "method": "DELETE",
+      "path": "/v1/catalog/foods/{id}",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Delete one food.",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Your id of the food.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogDeleted",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogRecipesList",
+      "id": "catalog-recipes-list",
+      "method": "GET",
+      "path": "/v1/catalog/recipes",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "List and search the recipes in your catalog.",
+      "parameters": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "description": "Optional search term. Without it, all entries are listed.",
+          "schema": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "description": "Value of next_cursor from the previous page.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogRecipeList",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogRecipesPut",
+      "id": "catalog-recipes-put",
+      "method": "POST",
+      "path": "/v1/catalog/recipes",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Create or replace recipes, one or several at once.",
+      "parameters": [],
+      "requestSchema": "CatalogRecipesRequest",
+      "responseSchema": "CatalogSaveResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogRecipesGet",
+      "id": "catalog-recipes-get",
+      "method": "GET",
+      "path": "/v1/catalog/recipes/{id}",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Get one recipe.",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Your id of the recipe.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogRecipe",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "catalogRecipesDelete",
+      "id": "catalog-recipes-delete",
+      "method": "DELETE",
+      "path": "/v1/catalog/recipes/{id}",
+      "state": "planned",
+      "credits": 0,
+      "tag": "catalog",
+      "summary": "Delete one recipe.",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Your id of the recipe.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "CatalogDeleted",
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "foodsBarcode",
+      "id": "foods-barcode",
+      "method": "GET",
+      "path": "/v1/foods/barcode/{code}",
+      "state": "planned",
+      "credits": 1,
+      "tag": "foods",
+      "summary": "Product by barcode",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "description": "Barcode of the product: 8, 12, 13 or 14 digits.",
+          "schema": {
+            "type": "string",
+            "pattern": "^(\\d{8}|\\d{12}|\\d{13}|\\d{14})$"
+          }
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ]
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "ProductResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "404",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "foodsSearch",
+      "id": "foods-search",
+      "method": "GET",
+      "path": "/v1/foods/search",
+      "state": "planned",
+      "credits": 1,
+      "tag": "foods",
+      "summary": "Food search",
+      "parameters": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "description": "Search term, not empty.",
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ]
+          }
+        }
+      ],
+      "requestSchema": null,
+      "responseSchema": "FoodSearchResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "goalsCalculate",
+      "id": "goals-calculate",
+      "method": "POST",
+      "path": "/v1/goals/calculate",
+      "state": "planned",
+      "credits": 1,
+      "tag": "goals",
+      "summary": "Goal calculator",
+      "parameters": [],
+      "requestSchema": "GoalsRequest",
+      "responseSchema": "GoalsResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "nutritionCorrect",
+      "id": "nutrition-correct",
+      "method": "POST",
+      "path": "/v1/nutrition/correct",
+      "state": "planned",
+      "credits": null,
+      "tag": "nutrition",
+      "summary": "Correction",
+      "parameters": [],
+      "requestSchema": "NutritionCorrectRequest",
+      "responseSchema": "NutritionCorrectResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503"
+      ]
+    },
+    {
+      "operationId": "nutritionPhoto",
+      "id": "nutrition-photo",
+      "method": "POST",
+      "path": "/v1/nutrition/photo",
+      "state": "beta-planned",
+      "credits": 2,
+      "tag": "nutrition",
+      "summary": "Photo to nutrition",
+      "parameters": [],
+      "requestSchema": "NutritionPhotoRequest",
+      "responseSchema": "NutritionPhotoResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503",
+        "504"
+      ],
+      "tiers": [
+        {
+          "id": "economy",
+          "state": "launch",
+          "modelId": "glm-5.3-flash",
+          "credits": 2
+        },
+        {
+          "id": "max",
+          "state": "later",
+          "modelId": null,
+          "credits": null
+        }
+      ]
+    },
+    {
+      "operationId": "nutritionText",
+      "id": "nutrition-text",
+      "method": "POST",
+      "path": "/v1/nutrition/text",
+      "state": "planned",
+      "credits": 1,
+      "tag": "nutrition",
+      "summary": "Text to nutrition",
+      "parameters": [],
+      "requestSchema": "NutritionTextRequest",
+      "responseSchema": "NutritionTextResponse",
+      "errorStatuses": [
+        "400",
+        "401",
+        "402",
+        "403",
+        "422",
+        "429",
+        "500",
+        "503",
+        "504"
+      ],
+      "tiers": [
+        {
+          "id": "economy",
+          "state": "launch",
+          "modelId": "glm-5.3-flash",
+          "credits": 1
+        },
+        {
+          "id": "max",
+          "state": "later",
+          "modelId": null,
+          "credits": null
+        }
+      ]
+    }
+  ],
+  "unavailable": [
+    {
+      "id": "pantry-photo",
+      "method": "POST",
+      "path": "/v1/pantry/photo",
+      "state": "later"
+    },
+    {
+      "id": "recipes-suggest",
+      "method": "POST",
+      "path": "/v1/recipes/suggest",
+      "state": "later"
+    },
+    {
+      "id": "nutrition-micronutrients",
+      "method": "POST",
+      "path": "/v1/nutrition/micronutrients",
+      "state": "later"
+    },
+    {
+      "id": "training-plan",
+      "method": "POST",
+      "path": "/v1/training/plan",
+      "state": "later"
+    }
+  ],
+  "schemas": {
+    "Macros": {
+      "type": "object",
+      "required": [
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g"
+      ],
+      "properties": {
+        "kcal": {
+          "type": "number",
+          "description": "Energy in kcal.",
+          "minimum": 0
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams.",
+          "minimum": 0
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams.",
+          "minimum": 0
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams.",
+          "minimum": 0
+        }
+      }
+    },
+    "Per100gInput": {
+      "type": "object",
+      "required": [
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g"
+      ],
+      "additionalProperties": false,
+      "description": "Values per 100 g in your own data (custom_foods and catalog), with upper limits. The sum of protein_g, carbs_g and fat_g is at most 102.",
+      "properties": {
+        "kcal": {
+          "type": "number",
+          "description": "Energy in kcal.",
+          "minimum": 0,
+          "maximum": 900
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams. protein_g, carbs_g and fat_g together at most 102.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams. protein_g, carbs_g and fat_g together at most 102.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams. protein_g, carbs_g and fat_g together at most 102.",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "Source": {
+      "type": "string",
+      "enum": [
+        "customer_inline",
+        "customer_catalog",
+        "usda_fdc",
+        "open_food_facts",
+        "model"
+      ],
+      "description": "Where the values come from."
+    },
+    "CustomFood": {
+      "type": "object",
+      "required": [
+        "name",
+        "per_100g"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of your food, as it may appear in text or on the plate.",
+          "maxLength": 200
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Per100gInput"
+        },
+        "grams": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 5000,
+          "description": "Optional. Amount in grams. Without it, the amount is estimated."
+        },
+        "barcode": {
+          "type": "string",
+          "description": "Optional. Barcode of the product: 8, 12, 13 or 14 digits.",
+          "pattern": "^(\\d{8}|\\d{12}|\\d{13}|\\d{14})$"
+        }
+      }
+    },
+    "NutritionTextRequest": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Free text describing what was eaten, also transcribed from speech. Length is counted in UTF-16 code units, like the length of a string in JavaScript; an emoji therefore usually counts as two characters.",
+          "maxLength": 2000
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en"
+          ],
+          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. The language of name and dish is chosen by the model; it is neither fixed nor measured."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "max"
+          ],
+          "default": "economy",
+          "description": "Tier of the call. Default economy. max is not available yet and is answered with 422 tier_unavailable; so is a tier that is not yet enabled for live keys."
+        },
+        "model": {
+          "type": "string",
+          "description": "Optional. Pins the call to one model of the chosen tier, so a later model change does not affect it. Today each tier has exactly one model."
+        },
+        "custom_foods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomFood"
+          },
+          "maxItems": 200,
+          "description": "Optional. Your own foods for this call only, for example house recipes, a menu or the range of a shop. For text and photo: if the name of the recognised dish matches one of your entries, its values per 100 g apply. Single components are not matched. How often this matching hits is not measured. Items based on them carry source customer_inline. Nothing of it is stored."
+        }
+      }
+    },
+    "Range": {
+      "type": "object",
+      "required": [
+        "value",
+        "low",
+        "high"
+      ],
+      "description": "Range: value is the best estimate, low and high estimate the uncertainty (low ≤ value ≤ high). No guarantee that the true value lies in between. Response format of chain v2, planned; field names are preliminary and may change before launch.",
+      "properties": {
+        "value": {
+          "type": "number",
+          "description": "Best estimate."
+        },
+        "low": {
+          "type": "number",
+          "description": "Lower end of the range."
+        },
+        "high": {
+          "type": "number",
+          "description": "Upper end of the range."
+        }
+      }
+    },
+    "Total": {
+      "type": "object",
+      "required": [
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g"
+      ],
+      "properties": {
+        "kcal": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Sum of the items in kcal; low and high are the sums of the lower and upper ends."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Sum of protein in grams."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Sum of carbohydrates in grams."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Sum of fat in grams."
+        }
+      }
+    },
+    "Component": {
+      "type": "object",
+      "required": [
+        "name",
+        "grams",
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "per_100g"
+      ],
+      "description": "Component of the dish. In chain v2 as measured, there is exactly one: the whole dish (components_granularity \"dish\").",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the component; with granularity \"dish\" the name of the dish."
+        },
+        "grams": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Portion of this component in grams, as a range."
+        },
+        "kcal": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy of this component in kcal, as a range."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams, calculated from per_100g and grams.value."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams, calculated from per_100g and grams.value."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams, calculated from per_100g and grams.value."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
+        }
+      }
+    },
+    "NutritionItem": {
+      "type": "object",
+      "required": [
+        "name",
+        "quantity",
+        "grams",
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "per_100g",
+        "components",
+        "components_granularity",
+        "confidence",
+        "needs_review",
+        "source"
+      ],
+      "description": "Response format of chain v2, planned; field names are preliminary and may change before launch.",
+      "properties": {
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "name": {
+          "type": "string",
+          "description": "Recognised meal; as measured, one item for the whole input."
+        },
+        "quantity": {
+          "type": "string",
+          "description": "Amount as text, today always grams.value with the unit g, for example \"300 g\". The measured chain returns no amount in words such as \"2 slices\"."
+        },
+        "grams": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Weight in grams as a range. If you stated the amount yourself, low, value and high are equal."
+        },
+        "kcal": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kcal as a range, calculated from per_100g and the range in grams; logarithmically symmetric like grams. May differ from the estimate by rounding remainders (about 1 kcal)."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams, calculated from per_100g and grams.value."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams, calculated from per_100g and grams.value."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams, calculated from per_100g and grams.value."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Component"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "description": "In chain v2 as measured, exactly one entry: the whole input. Splitting into single foods is planned and needs a new measurement."
+        },
+        "components_granularity": {
+          "type": "string",
+          "enum": [
+            "dish"
+          ],
+          "description": "What components describes. \"dish\": one entry for the whole input."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "kcal.low divided by kcal.value, rounded to two decimals (1 if kcal.value is 0): the narrower the kcal range, the closer to 1. The range comes from the spread of several samples of the model (for photos also from the range the model states). Not a probability that the value is right."
+        },
+        "needs_review": {
+          "type": "boolean",
+          "description": "true: a person should check this item before you use it. false is no confirmation that the value is right."
+        }
+      }
+    },
+    "NutritionTextResponse": {
+      "type": "object",
+      "required": [
+        "items",
+        "total",
+        "tier",
+        "model",
+        "prompt_version"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NutritionItem"
+          },
+          "description": "Recognised items; as measured, exactly one for the whole input. Several items (one per food) are planned."
+        },
+        "total": {
+          "$ref": "#/components/schemas/Total"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "max"
+          ],
+          "description": "Tier that answered the call."
+        },
+        "model": {
+          "type": "string",
+          "description": "Model that answered the call."
+        },
+        "prompt_version": {
+          "type": "string",
+          "description": "Version of chain and prompt that answered the call, today \"kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)\"."
+        }
+      }
+    },
+    "CorrectItemInput": {
+      "type": "object",
+      "required": [
+        "name",
+        "grams",
+        "per_100g"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the item, as in the earlier response or new."
+        },
+        "grams": {
+          "oneOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Greater than 0."
+            },
+            {
+              "$ref": "#/components/schemas/Range"
+            }
+          ],
+          "description": "A number is the corrected amount; then low = value = high. A range from the earlier response stays unchanged."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g, from the earlier response or, for a new or replaced item, from your data or a food search."
+        },
+        "source": {
+          "$ref": "#/components/schemas/Source",
+          "description": "Optional. Returned unchanged; without it, customer_inline."
+        }
+      }
+    },
+    "NutritionCorrectRequest": {
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CorrectItemInput"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "description": "All items that should count. Leaving an item out removes it; a new item with per_100g adds it."
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en"
+          ],
+          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names are returned unchanged."
+        }
+      }
+    },
+    "CorrectedItem": {
+      "type": "object",
+      "required": [
+        "name",
+        "grams",
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "per_100g",
+        "source"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the item."
+        },
+        "grams": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Weight in grams as a range. If you stated the amount yourself, low, value and high are equal."
+        },
+        "kcal": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kcal as a range, calculated from per_100g and the range in grams; logarithmically symmetric like grams. May differ from the estimate by rounding remainders (about 1 kcal)."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams, calculated from per_100g and grams.value."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams, calculated from per_100g and grams.value."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams, calculated from per_100g and grams.value."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
+        },
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        }
+      }
+    },
+    "NutritionCorrectResponse": {
+      "type": "object",
+      "required": [
+        "items",
+        "total"
+      ],
+      "description": "Response format of chain v2, planned; field names are preliminary and may change before launch.",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CorrectedItem"
+          },
+          "description": "Recalculated items."
+        },
+        "total": {
+          "$ref": "#/components/schemas/Total"
+        }
+      }
+    },
+    "NutritionPhotoRequest": {
+      "type": "object",
+      "required": [
+        "image_base64"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "image_base64": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "description": "Photo of the dish, Base64-encoded. At most 8 MiB before encoding and 60 megapixels."
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en"
+          ],
+          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. The language of name and dish is chosen by the model; it is neither fixed nor measured."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "max"
+          ],
+          "default": "economy",
+          "description": "Tier of the call. Default economy. max is not available yet and is answered with 422 tier_unavailable; so is a tier that is not yet enabled for live keys."
+        },
+        "model": {
+          "type": "string",
+          "description": "Optional. Pins the call to one model of the chosen tier, so a later model change does not affect it. Today each tier has exactly one model."
+        },
+        "custom_foods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomFood"
+          },
+          "maxItems": 200,
+          "description": "Optional. Your own foods for this call only, for example house recipes, a menu or the range of a shop. For text and photo: if the name of the recognised dish matches one of your entries, its values per 100 g apply. Single components are not matched. How often this matching hits is not measured. Items based on them carry source customer_inline. Nothing of it is stored."
+        }
+      }
+    },
+    "NutritionPhotoResponse": {
+      "type": "object",
+      "required": [
+        "dish",
+        "grams",
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "per_100g",
+        "components",
+        "components_granularity",
+        "confidence",
+        "needs_review",
+        "source",
+        "beta",
+        "tier",
+        "model",
+        "prompt_version"
+      ],
+      "description": "Response format of chain v2, planned; field names are preliminary and may change before launch.",
+      "properties": {
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "dish": {
+          "type": "string",
+          "description": "Recognised dish."
+        },
+        "grams": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Weight in grams as a range. If you stated the amount yourself, low, value and high are equal."
+        },
+        "kcal": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kcal as a range, calculated from per_100g and the range in grams; logarithmically symmetric like grams. May differ from the estimate by rounding remainders (about 1 kcal)."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams, calculated from per_100g and grams.value."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams, calculated from per_100g and grams.value."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams, calculated from per_100g and grams.value."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Component"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "description": "Components of the dish; their ranges in grams and kcal add up to those of the dish. In chain v2 as measured, exactly one entry: the whole dish. The measured prompt returns no separate components."
+        },
+        "components_granularity": {
+          "type": "string",
+          "enum": [
+            "dish"
+          ],
+          "description": "What components describes. \"dish\": one entry for the whole dish."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "kcal.low divided by kcal.value, rounded to two decimals (1 if kcal.value is 0): the narrower the kcal range, the closer to 1. The range comes from the spread of several samples of the model (for photos also from the range the model states). Not a probability that the value is right."
+        },
+        "needs_review": {
+          "type": "boolean",
+          "description": "true: a person should check this item before you use it. false is no confirmation that the value is right."
+        },
+        "beta": {
+          "type": "boolean",
+          "description": "Marks the response as beta."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "max"
+          ],
+          "description": "Tier that answered the call."
+        },
+        "model": {
+          "type": "string",
+          "description": "Model that answered the call."
+        },
+        "prompt_version": {
+          "type": "string",
+          "description": "Version of chain and prompt that answered the call, today \"kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)\"."
+        }
+      }
+    },
+    "FoodSearchResult": {
+      "type": "object",
+      "required": [
+        "name",
+        "per_100g",
+        "source"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the food. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g. For drinks, Open Food Facts often lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion."
+        },
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "license": {
+          "type": "string",
+          "description": "License of the data. Only for open sources, not for your own data."
+        },
+        "attribution": {
+          "type": "string",
+          "description": "Attribution required by the license, for example for Open Food Facts (ODbL). Only where the license requires it."
+        }
+      }
+    },
+    "FoodSearchResponse": {
+      "type": "object",
+      "required": [
+        "query",
+        "results"
+      ],
+      "description": "No partial results: if a source fails, the response is 503 service_unavailable.",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search term as received."
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FoodSearchResult"
+          }
+        }
+      }
+    },
+    "ProductResponse": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "per_100g",
+        "source"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Barcode of the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Product name, as entered in the source."
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Macros",
+          "description": "Values per 100 g. For drinks, Open Food Facts often lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion."
+        },
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "license": {
+          "type": "string",
+          "description": "License of the data. Only for open sources."
+        },
+        "attribution": {
+          "type": "string",
+          "description": "Attribution required by the license. Only for open sources."
+        }
+      }
+    },
+    "CatalogFood": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "per_100g"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Your own id, for example an article number. Sending the same id again replaces the entry."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the food.",
+          "maxLength": 200
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Per100gInput"
+        },
+        "barcode": {
+          "type": "string",
+          "description": "Optional. Barcode of the product: 8, 12, 13 or 14 digits.",
+          "pattern": "^(\\d{8}|\\d{12}|\\d{13}|\\d{14})$"
+        }
+      }
+    },
+    "CatalogRecipe": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "per_100g"
+      ],
+      "additionalProperties": false,
+      "description": "Preliminary: the fields of recipes are not final yet.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Your own id of the recipe. Sending the same id again replaces the entry."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the recipe.",
+          "maxLength": 200
+        },
+        "per_100g": {
+          "$ref": "#/components/schemas/Per100gInput"
+        }
+      }
+    },
+    "CatalogFoodsRequest": {
+      "type": "object",
+      "required": [
+        "foods"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "foods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogFood"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "description": "One or several foods to create or replace."
+        }
+      }
+    },
+    "CatalogRecipesRequest": {
+      "type": "object",
+      "required": [
+        "recipes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "recipes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogRecipe"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "description": "One or several recipes to create or replace."
+        }
+      }
+    },
+    "CatalogSaveResponse": {
+      "type": "object",
+      "required": [
+        "saved"
+      ],
+      "properties": {
+        "saved": {
+          "type": "array",
+          "description": "One line per entry sent.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "result"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your id of the entry."
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "created",
+                  "replaced"
+                ],
+                "description": "New or replaced."
+              }
+            }
+          }
+        }
+      }
+    },
+    "CatalogFoodList": {
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogFood"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Only present when there are more entries. Send it as cursor."
+        }
+      }
+    },
+    "CatalogRecipeList": {
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogRecipe"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Only present when there are more entries. Send it as cursor."
+        }
+      }
+    },
+    "CatalogDeleted": {
+      "type": "object",
+      "required": [
+        "id",
+        "deleted"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Your id of the deleted entry."
+        },
+        "deleted": {
+          "type": "boolean",
+          "description": "Always true."
+        }
+      }
+    },
+    "CatalogCleared": {
+      "type": "object",
+      "required": [
+        "deleted_foods",
+        "deleted_recipes"
+      ],
+      "properties": {
+        "deleted_foods": {
+          "type": "integer",
+          "description": "Number of deleted foods."
+        },
+        "deleted_recipes": {
+          "type": "integer",
+          "description": "Number of deleted recipes."
+        }
+      }
+    },
+    "CatalogExport": {
+      "type": "object",
+      "required": [
+        "foods",
+        "recipes"
+      ],
+      "properties": {
+        "foods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogFood"
+          }
+        },
+        "recipes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogRecipe"
+          }
+        }
+      }
+    },
+    "AccountBalance": {
+      "type": "object",
+      "required": [
+        "credits_remaining"
+      ],
+      "properties": {
+        "credits_remaining": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current balance in credits, the same value as the X-Credits-Remaining header. Credits reserved for calls that are still running are not yet deducted from it."
+        }
+      }
+    },
+    "AccountUsage": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "days",
+        "total"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date",
+          "description": "First day of the period."
+        },
+        "to": {
+          "type": "string",
+          "format": "date",
+          "description": "Last day of the period."
+        },
+        "days": {
+          "type": "array",
+          "description": "One line per day and endpoint with at least one call; days without calls are left out.",
+          "items": {
+            "type": "object",
+            "required": [
+              "date",
+              "endpoint",
+              "calls",
+              "credits"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Day, UTC."
+              },
+              "endpoint": {
+                "type": "string",
+                "description": "Path of the endpoint."
+              },
+              "calls": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of calls."
+              },
+              "credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Credits deducted."
+              }
+            }
+          }
+        },
+        "total": {
+          "type": "object",
+          "required": [
+            "calls",
+            "credits"
+          ],
+          "description": "Sums over all lines.",
+          "properties": {
+            "calls": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of calls."
+            },
+            "credits": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Credits deducted."
+            }
+          }
+        }
+      }
+    },
+    "GoalsRequest": {
+      "type": "object",
+      "required": [
+        "sex",
+        "weight_kg",
+        "height_cm",
+        "age",
+        "activity_level",
+        "goal"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sex": {
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "other"
+          ],
+          "description": "Sex, used by the formula."
+        },
+        "weight_kg": {
+          "type": "number",
+          "minimum": 30,
+          "maximum": 300,
+          "description": "Body weight in kilograms."
+        },
+        "height_cm": {
+          "type": "number",
+          "minimum": 120,
+          "maximum": 230,
+          "description": "Height in centimetres."
+        },
+        "age": {
+          "type": "integer",
+          "minimum": 18,
+          "maximum": 100,
+          "description": "Age in years."
+        },
+        "activity_level": {
+          "type": "string",
+          "enum": [
+            "sedentary",
+            "lightly_active",
+            "active",
+            "very_active"
+          ],
+          "description": "Everyday activity."
+        },
+        "goal": {
+          "type": "string",
+          "enum": [
+            "lose_weight",
+            "build_muscle",
+            "gain_weight",
+            "endurance",
+            "maintain"
+          ],
+          "description": "Goal."
+        }
+      }
+    },
+    "GoalsResponse": {
+      "type": "object",
+      "required": [
+        "calories_kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "water_ml",
+        "basal_metabolic_rate_kcal",
+        "method"
+      ],
+      "properties": {
+        "calories_kcal": {
+          "type": "number",
+          "description": "Daily calories in kcal."
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein per day in grams."
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates per day in grams."
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat per day in grams."
+        },
+        "water_ml": {
+          "type": "number",
+          "description": "Water per day in millilitres."
+        },
+        "basal_metabolic_rate_kcal": {
+          "type": "number",
+          "description": "Basal metabolic rate in kcal."
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "mifflin_st_jeor"
+          ],
+          "description": "Formula used."
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "request_id"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "invalid_json",
+                "invalid_key",
+                "insufficient_credits",
+                "daily_limit_reached",
+                "account_suspended",
+                "not_found",
+                "invalid_request",
+                "tier_unavailable",
+                "rate_limited",
+                "internal_error",
+                "service_unavailable",
+                "timeout"
+              ],
+              "description": "Machine-readable error code."
+            },
+            "message": {
+              "type": "string",
+              "description": "Human-readable description. For invalid_request it names the fields concerned."
+            },
+            "request_id": {
+              "type": "string",
+              "description": "ID of the call, also sent as the X-Request-Id header."
+            }
+          }
+        }
+      }
+    }
+  },
+  "errorCodes": [
+    {
+      "status": 400,
+      "code": "invalid_json",
+      "message": "The request body is not valid JSON."
+    },
+    {
+      "status": 401,
+      "code": "invalid_key",
+      "message": "The key is missing, unknown or blocked."
+    },
+    {
+      "status": 402,
+      "code": "insufficient_credits",
+      "message": "Not enough credits for this call."
+    },
+    {
+      "status": 402,
+      "code": "daily_limit_reached",
+      "message": "The daily spending limit of your account has been reached."
+    },
+    {
+      "status": 403,
+      "code": "account_suspended",
+      "message": "Your account is suspended, for example because of a payment dispute. Contact us; credits and receipts stay readable in the console."
+    },
+    {
+      "status": 404,
+      "code": "not_found",
+      "message": "What you asked for does not exist, for example no product for this barcode or no entry with this id in your catalog."
+    },
+    {
+      "status": 422,
+      "code": "invalid_request",
+      "message": "The JSON is valid, but a field is missing, has a wrong value or exceeds a limit. The message names the fields."
+    },
+    {
+      "status": 422,
+      "code": "tier_unavailable",
+      "message": "The chosen tier is not available yet or not yet enabled for live keys. AI endpoints only."
+    },
+    {
+      "status": 429,
+      "code": "rate_limited",
+      "message": "Too many calls with this key in a short time."
+    },
+    {
+      "status": 500,
+      "code": "internal_error",
+      "message": "An error on our side. Nothing is deducted."
+    },
+    {
+      "status": 503,
+      "code": "service_unavailable",
+      "message": "The endpoint is temporarily blocked or not enabled yet, or a service the response depends on returns nothing usable (model provider, USDA FoodData Central, Open Food Facts): it does not answer, throttles, reports an error or returns only invalid answers. That includes an estimate in which the model names no portion. Nothing is deducted."
+    },
+    {
+      "status": 504,
+      "code": "timeout",
+      "message": "The time limit ran out before a usable estimate was ready. AI endpoints only, and only in this case; every other failure of the model is 503. Nothing is deducted."
+    }
+  ],
+  "responseHeaders": [
+    {
+      "name": "X-Credits-Charged",
+      "type": "integer",
+      "alsoWithoutKey": false
+    },
+    {
+      "name": "X-Credits-Remaining",
+      "type": "integer",
+      "alsoWithoutKey": false
+    },
+    {
+      "name": "X-Request-Id",
+      "type": "string",
+      "alsoWithoutKey": true
+    }
+  ],
+  "limits": {
+    "textMaxChars": 2000,
+    "imageMaxMiB": 8,
+    "imageMaxMegapixels": 60,
+    "customFoodsMax": 200,
+    "correctItemsMax": 100,
+    "catalogFoodsMax": 10000,
+    "catalogRecipesMax": 2000,
+    "catalogUploadMax": 100,
+    "deadlineSeconds": {
+      "nutrition-text": 22,
+      "nutrition-photo": 12
+    },
+    "usageMaxDays": 92,
+    "per100g": {
+      "kcalMax": 900,
+      "macroMaxG": 100,
+      "macroSumMaxG": 102
+    },
+    "foodNameMaxChars": 200,
+    "customFoodGramsMax": 5000,
+    "barcodeDigits": [
+      8,
+      12,
+      13,
+      14
+    ],
+    "searchQueryMaxChars": 100
+  },
+  "sourceIds": [
+    "customer_inline",
+    "customer_catalog",
+    "usda_fdc",
+    "open_food_facts",
+    "model"
+  ],
+  "tierIds": [
+    "economy",
+    "max"
+  ],
+  "defaultTier": "economy",
+  "promptVersion": {
+    "nutrition-text": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+    "nutrition-photo": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"
+  }
+}
