@@ -1,0 +1,74 @@
+"""Official Python client for the Flexen API."""
+
+from ._base import DEFAULT_BASE_URL, DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT, RETRY_STATUSES, FlexenResponse, RetryConfig, compute_retry_delay, parse_retry_after
+from ._client import AsyncFlexen, Flexen
+from ._errors import (
+    ERROR_CLASS_BY_CODE,
+    AccountSuspendedError,
+    APIConnectionError,
+    APIError,
+    AuthenticationError,
+    BadRequestError,
+    DailyLimitReachedError,
+    FlexenError,
+    InsufficientCreditsError,
+    InternalServerError,
+    InvalidInputError,
+    InvalidRequestError,
+    NotFoundError,
+    RateLimitError,
+    RequestTimeoutError,
+    ServerTimeoutError,
+    ServiceUnavailableError,
+    TierUnavailableError,
+    UnexpectedResponseError,
+)
+from ._generated import CONTRACT_SOURCE, DEFAULT_TIER, ERROR_CODES, LIMITS, NOT_AVAILABLE, OPERATIONS, PROMPT_VERSION, RESPONSE_HEADERS
+from ._photo import IMAGE_MAX_BYTES, decoded_base64_bytes
+from ._version import __version__
+
+from . import _generated as types  # noqa: E402  (all contract models: flexen.types.NutritionTextResponse, ...)
+
+__all__ = [
+    "APIConnectionError",
+    "APIError",
+    "AccountSuspendedError",
+    "AsyncFlexen",
+    "AuthenticationError",
+    "BadRequestError",
+    "CONTRACT_SOURCE",
+    "DEFAULT_BASE_URL",
+    "DEFAULT_MAX_RETRIES",
+    "DEFAULT_TIER",
+    "DEFAULT_TIMEOUT",
+    "DailyLimitReachedError",
+    "ERROR_CLASS_BY_CODE",
+    "ERROR_CODES",
+    "Flexen",
+    "FlexenError",
+    "FlexenResponse",
+    "IMAGE_MAX_BYTES",
+    "InsufficientCreditsError",
+    "InternalServerError",
+    "InvalidInputError",
+    "InvalidRequestError",
+    "LIMITS",
+    "NOT_AVAILABLE",
+    "NotFoundError",
+    "OPERATIONS",
+    "PROMPT_VERSION",
+    "RESPONSE_HEADERS",
+    "RETRY_STATUSES",
+    "RateLimitError",
+    "RequestTimeoutError",
+    "RetryConfig",
+    "ServerTimeoutError",
+    "ServiceUnavailableError",
+    "TierUnavailableError",
+    "UnexpectedResponseError",
+    "__version__",
+    "compute_retry_delay",
+    "decoded_base64_bytes",
+    "parse_retry_after",
+    "types",
+]
