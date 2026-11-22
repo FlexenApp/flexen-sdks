@@ -1,4 +1,4 @@
-# @flexen/api
+# @flexenai/api
 
 Offizieller TypeScript-Client der Flexen API: Nährwerte aus Text und Fotos, Lebensmittelsuche, Barcode, Zielrechner, eigener Lebensmittelkatalog und Guthaben.
 
@@ -10,12 +10,12 @@ English: [README.md](./README.md)
 
 ## Schnellstart
 
-1. Installieren: `npm install @flexen/api`
+1. Installieren: `npm install @flexenai/api`
 2. Schlüssel setzen: `export FLEXEN_API_KEY=flx_live_…` (Schlüssel legst du in der Flexen-Konsole an; `flx_test_…`-Schlüssel liefern feste Beispiele und kosten nichts)
 3. Aufrufen:
 
 ```ts
-import { Flexen } from '@flexen/api'
+import { Flexen } from '@flexenai/api'
 
 const flexen = new Flexen() // liest FLEXEN_API_KEY
 const { data, creditsCharged, creditsRemaining } = await flexen.nutrition.text({ text: '2 Scheiben Vollkornbrot mit Gouda und ein Apfel', lang: 'de' })
@@ -51,7 +51,7 @@ Namen kommen so, wie die Quelle sie führt (USDA nur auf Englisch). Jedes Ergebn
 ### Zu wenig Guthaben
 
 ```ts
-import { InsufficientCreditsError, DailyLimitReachedError, APIError } from '@flexen/api'
+import { InsufficientCreditsError, DailyLimitReachedError, APIError } from '@flexenai/api'
 
 try {
   await flexen.nutrition.text({ text: 'Haferbrei mit Blaubeeren' })

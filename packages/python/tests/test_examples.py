@@ -10,9 +10,9 @@ from typing import Any
 
 import pytest
 
-import flexen._client
+import flexenai._client
 from conftest import EXAMPLES, OK_HEADERS, TEST_KEY, Fake, Recorded, Reply
-from flexen import OPERATIONS
+from flexenai import OPERATIONS
 
 DIR = Path(__file__).resolve().parents[1] / "examples"
 FOOD = {"id": "sku-10482", "name": "Protein bar hazelnut", "per_100g": {"kcal": 386, "protein_g": 31, "carbs_g": 29, "fat_g": 15}}
@@ -34,7 +34,7 @@ def answer(req: Recorded) -> Reply:
 def example_env(fake: Fake, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Fake:
     fake.handle(answer)
     monkeypatch.setenv("FLEXEN_API_KEY", TEST_KEY)
-    monkeypatch.setattr(flexen._client, "DEFAULT_BASE_URL", fake.url)
+    monkeypatch.setattr(flexenai._client, "DEFAULT_BASE_URL", fake.url)
     photo = tmp_path / "lunch.jpg"
     photo.write_bytes(bytes([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01]))
     monkeypatch.setattr(sys, "argv", ["example", str(photo)])

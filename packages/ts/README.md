@@ -1,4 +1,4 @@
-# @flexen/api
+# @flexenai/api
 
 Official TypeScript client for the Flexen API: nutrition from text and photos, food search, barcode lookup, goal calculator, your own food catalog and your account balance.
 
@@ -10,12 +10,12 @@ Deutsch: [README.de.md](./README.de.md)
 
 ## Quick start
 
-1. Install: `npm install @flexen/api`
+1. Install: `npm install @flexenai/api`
 2. Set your key: `export FLEXEN_API_KEY=flx_live_…` (create keys in the Flexen console; `flx_test_…` keys return fixed examples and cost nothing)
 3. Call the API:
 
 ```ts
-import { Flexen } from '@flexen/api'
+import { Flexen } from '@flexenai/api'
 
 const flexen = new Flexen() // reads FLEXEN_API_KEY
 const { data, creditsCharged, creditsRemaining } = await flexen.nutrition.text({ text: '2 slices of wholemeal bread with gouda and an apple' })
@@ -51,7 +51,7 @@ Names come as the source lists them (USDA only in English). Every result names i
 ### Handling insufficient credits
 
 ```ts
-import { InsufficientCreditsError, DailyLimitReachedError, APIError } from '@flexen/api'
+import { InsufficientCreditsError, DailyLimitReachedError, APIError } from '@flexenai/api'
 
 try {
   await flexen.nutrition.text({ text: 'porridge with blueberries' })

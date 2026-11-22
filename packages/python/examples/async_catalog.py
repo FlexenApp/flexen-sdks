@@ -5,7 +5,7 @@ Run: FLEXEN_API_KEY=flx_test_… python examples/async_catalog.py
 
 import asyncio
 
-from flexen import AsyncFlexen
+from flexenai import AsyncFlexen
 
 FOOD = {"id": "sku-10482", "name": "Protein bar hazelnut", "per_100g": {"kcal": 386, "protein_g": 31, "carbs_g": 29, "fat_g": 15}}
 

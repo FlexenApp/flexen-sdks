@@ -12,9 +12,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "packages" / "python" / "src"))
 
-import flexen  # noqa: E402
-from flexen._base import SDK_OPTIONS  # noqa: E402
-from flexen._errors import ERROR_CLASS_BY_CODE  # noqa: E402
+import flexenai  # noqa: E402
+from flexenai._base import SDK_OPTIONS  # noqa: E402
+from flexenai._errors import ERROR_CLASS_BY_CODE  # noqa: E402
 
 
 def walk(obj: object, prefix: str, seen: set[int], out: dict[str, dict[str, object]], flavour: str) -> None:
@@ -33,11 +33,11 @@ def walk(obj: object, prefix: str, seen: set[int], out: dict[str, dict[str, obje
             if flavour in entry:
                 raise SystemExit(f"operation {op} is bound twice in {flavour}: {entry[flavour]['method']} and {prefix}.{name}")
             entry[flavour] = {"method": f"{prefix}.{name}", "params": params, "extra": extra}
-        elif type(attr).__module__.startswith("flexen._client"):
+        elif type(attr).__module__.startswith("flexenai._client"):
             walk(attr, f"{prefix}.{name}", seen, out, flavour)
 
 
 surface: dict[str, dict[str, object]] = {}
-walk(flexen.Flexen("flx_test_surface"), "Flexen", set(), surface, "sync")
-walk(flexen.AsyncFlexen("flx_test_surface"), "AsyncFlexen", set(), surface, "async")
+walk(flexenai.Flexen("flx_test_surface"), "Flexen", set(), surface, "sync")
+walk(flexenai.AsyncFlexen("flx_test_surface"), "AsyncFlexen", set(), surface, "async")
 print(json.dumps({"operations": surface, "errorCodes": sorted(ERROR_CLASS_BY_CODE), "sdkOptions": list(SDK_OPTIONS)}))

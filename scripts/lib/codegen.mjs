@@ -315,5 +315,5 @@ export function generatePython(snapshot) {
 /** Files the generator owns, relative to the repo root. */
 export const GENERATED = {
   ts: 'packages/ts/src/generated/contract.ts',
-  python: 'packages/python/src/flexen/_generated.py',
+  python: 'packages/python/src/flexenai/_generated.py',
 }

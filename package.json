@@ -13,9 +13,9 @@
     "generate": "node scripts/generate.mjs",
     "check:contract": "node scripts/check-contract.mjs",
     "test:scripts": "node --test scripts/check-contract.test.mjs",
-    "test:ts": "npm test -w @flexen/api",
+    "test:ts": "npm test -w @flexenai/api",
     "test:python": "cd packages/python && .venv/bin/python -m pytest -q",
-    "build:ts": "npm run build -w @flexen/api"
+    "build:ts": "npm run build -w @flexenai/api"
   },
   "devDependencies": {
     "tsx": "4.23.15"

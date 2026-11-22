@@ -4,8 +4,8 @@ Official clients for the Flexen API.
 
 | Package | Directory | Docs |
 | --- | --- | --- |
-| `@flexen/api` (TypeScript, Node 22+ and browsers) | `packages/ts` | [English](packages/ts/README.md), [Deutsch](packages/ts/README.de.md) |
-| `flexen` (Python 3.10+, sync and async) | `packages/python` | [English](packages/python/README.md), [Deutsch](packages/python/README.de.md) |
+| `@flexenai/api` (TypeScript, Node 22+ and browsers) | `packages/ts` | [English](packages/ts/README.md), [Deutsch](packages/ts/README.de.md) |
+| `flexenai` (Python 3.10+, sync and async) | `packages/python` | [English](packages/python/README.md), [Deutsch](packages/python/README.de.md) |
 
 ## Contract
 
@@ -16,7 +16,7 @@ The source of truth is the public contract on the website: `src/content/develope
 | `contract/snapshot.json` | endpoints, schemas, error codes, headers, limits (German texts and examples stripped) |
 | `contract/examples.json` | request and response examples of the contract, used as test fixtures |
 | `scripts/pull-contract.ts` | `npm run contract:pull -- <website checkout>` refreshes both files |
-| `scripts/generate.mjs` | `npm run generate` writes `packages/ts/src/generated/contract.ts` and `packages/python/src/flexen/_generated.py` |
+| `scripts/generate.mjs` | `npm run generate` writes `packages/ts/src/generated/contract.ts` and `packages/python/src/flexenai/_generated.py` |
 | `scripts/check-contract.mjs` | `npm run check:contract` fails on drift (see below) |
 
 ### Drift check
@@ -45,6 +45,6 @@ npm run check:contract
 
 ## Status
 
-Version 0.1.0 of both packages is prepared against the live contract (website `2b02040`). Nothing is published to npm or PyPI yet, so `npm install @flexen/api` and `pip install flexen` do not work yet. How a release happens: [RELEASING.md](RELEASING.md). License: MIT ([LICENSE](LICENSE)).
+Version 0.1.0 of both packages is prepared against the live contract (website `2b02040`). Nothing is published to npm or PyPI yet, so `npm install @flexenai/api` and `pip install flexenai` do not work yet. How a release happens: [RELEASING.md](RELEASING.md). License: MIT ([LICENSE](LICENSE)).
 
 Examples: [`packages/ts/examples`](packages/ts/examples), [`packages/python/examples`](packages/python/examples).

@@ -5,7 +5,7 @@ Run: FLEXEN_API_KEY=flx_test_… python examples/photo.py lunch.jpg
 
 import sys
 
-from flexen import LIMITS, Flexen, InvalidInputError
+from flexenai import LIMITS, Flexen, InvalidInputError
 
 if len(sys.argv) != 2:
     sys.exit("usage: photo.py <image file>")

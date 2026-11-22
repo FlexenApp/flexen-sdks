@@ -1,7 +1,7 @@
 # Publishes one SDK per tag, with trusted publishing (OIDC). No tokens are stored in this repository.
 #
-#   ts-v0.1.0  -> @flexen/api on npm   (provenance)
-#   py-v0.1.0  -> flexen on PyPI       (attestations)
+#   ts-v0.1.0  -> @flexenai/api on npm   (provenance)
+#   py-v0.1.0  -> flexenai on PyPI     (attestations)
 #
 # Before the first run, see RELEASING.md: the trusted publishers must be registered on npmjs.com and pypi.org
 # with exactly this repository, this file name (publish.yml) and the environments npm and pypi.
@@ -57,7 +57,7 @@ jobs:
       - run: npm install -g npm@^11.5.1
       - run: npm ci
       - run: npm run build:ts
-      - run: npm publish -w @flexen/api --access public --provenance
+      - run: npm publish -w @flexenai/api --access public --provenance
 
   pypi:
     if: startsWith(github.ref, 'refs/tags/py-v')

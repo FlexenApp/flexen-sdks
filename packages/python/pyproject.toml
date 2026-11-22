@@ -3,7 +3,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "flexen"
+name = "flexenai"
 version = "0.1.0"
 description = "Official Python client for the Flexen API (nutrition from text and photos, food search, barcode, goals, catalog, account)."
 readme = "README.md"
@@ -36,10 +36,10 @@ Changelog = "https://github.com/FlexenApp/flexen-sdks/blob/main/packages/python/
 dev = ["pytest==9.2.0"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/flexen"]
+packages = ["src/flexenai"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/flexen", "README.md", "README.de.md", "CHANGELOG.md", "LICENSE", "examples"]
+include = ["src/flexenai", "README.md", "README.de.md", "CHANGELOG.md", "LICENSE", "examples"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from conftest import EXAMPLES, OK_HEADERS, TEST_KEY, Fake, Reply
-from flexen import IMAGE_MAX_BYTES, LIMITS, AsyncFlexen, Flexen, InvalidInputError, decoded_base64_bytes
+from flexenai import IMAGE_MAX_BYTES, LIMITS, AsyncFlexen, Flexen, InvalidInputError, decoded_base64_bytes
 
 JPEG = bytes([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01])
 B64 = base64.b64encode(JPEG).decode()

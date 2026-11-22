@@ -4,7 +4,7 @@ Run: FLEXEN_API_KEY=flx_test_… python examples/text.py
 A test key returns a fixed example and costs nothing.
 """
 
-from flexen import Flexen
+from flexenai import Flexen
 
 with Flexen() as client:  # reads FLEXEN_API_KEY
     res = client.nutrition.text("2 slices of wholemeal bread with gouda and an apple", lang="en", nutrients="eu7")

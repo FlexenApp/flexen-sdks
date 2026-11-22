@@ -1,7 +1,7 @@
 /**
  * Checks that a release tag matches the version of the package it publishes.
  *   node scripts/release-version.mjs ts-v0.1.0   -> packages/ts/package.json and src/core.ts (VERSION)
- *   node scripts/release-version.mjs py-v0.1.0   -> packages/python/pyproject.toml and src/flexen/_version.py
+ *   node scripts/release-version.mjs py-v0.1.0   -> packages/python/pyproject.toml and src/flexenai/_version.py
  * Without an argument it only checks that the two places per package agree.
  */
 import { readFileSync } from 'node:fs'
@@ -19,7 +19,7 @@ const pick = (text, re, where) => {
 export function versions() {
   return {
     ts: [JSON.parse(read('packages/ts/package.json')).version, pick(read('packages/ts/src/core.ts'), /export const VERSION = '([^']+)'/, 'packages/ts/src/core.ts')],
-    py: [pick(read('packages/python/pyproject.toml'), /^version = "([^"]+)"/m, 'pyproject.toml'), pick(read('packages/python/src/flexen/_version.py'), /__version__ = "([^"]+)"/, '_version.py')],
+    py: [pick(read('packages/python/pyproject.toml'), /^version = "([^"]+)"/m, 'pyproject.toml'), pick(read('packages/python/src/flexenai/_version.py'), /__version__ = "([^"]+)"/, '_version.py')],
   }
 }
 
@@ -42,5 +42,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1)
   }
   const v = versions()
-  console.log(`versions agree: @flexen/api ${v.ts[0]}, flexen ${v.py[0]}`)
+  console.log(`versions agree: @flexenai/api ${v.ts[0]}, flexenai ${v.py[0]}`)
 }

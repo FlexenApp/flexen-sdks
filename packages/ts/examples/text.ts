@@ -3,7 +3,7 @@
  * Run: FLEXEN_API_KEY=flx_test_… npx tsx examples/text.ts
  * A test key returns a fixed example and costs nothing.
  */
-import { Flexen } from '@flexen/api'
+import { Flexen } from '@flexenai/api'
 
 const flexen = new Flexen() // reads FLEXEN_API_KEY
 

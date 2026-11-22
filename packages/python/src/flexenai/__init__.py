@@ -33,7 +33,7 @@ from ._generated import CONTRACT_SOURCE, DEFAULT_TIER, TIER_IDS, TIERS, ERROR_CO
 from ._photo import IMAGE_MAX_BYTES, decoded_base64_bytes
 from ._version import __version__
 
-from . import _generated as types  # noqa: E402  (all contract models: flexen.types.NutritionTextResponse, ...)
+from . import _generated as types  # noqa: E402  (all contract models: flexenai.types.NutritionTextResponse, ...)
 
 __all__ = [
     "APIConnectionError",

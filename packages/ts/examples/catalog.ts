@@ -2,7 +2,7 @@
  * Your own foods: upload, search, iterate, delete. Catalog calls are free.
  * Run: FLEXEN_API_KEY=flx_test_… npx tsx examples/catalog.ts
  */
-import { Flexen } from '@flexen/api'
+import { Flexen } from '@flexenai/api'
 
 const flexen = new Flexen()
 

@@ -1,5 +1,5 @@
 {
-  "name": "@flexen/api",
+  "name": "@flexenai/api",
   "version": "0.1.0",
   "description": "Official TypeScript client for the Flexen API (nutrition from text and photos, food search, barcode, goals, catalog, account).",
   "license": "MIT",

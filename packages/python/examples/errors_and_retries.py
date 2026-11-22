@@ -5,7 +5,7 @@ Run: FLEXEN_API_KEY=flx_test_… python examples/errors_and_retries.py
 
 import uuid
 
-from flexen import APIError, Flexen, InsufficientCreditsError, RateLimitError, TierUnavailableError
+from flexenai import APIError, Flexen, InsufficientCreditsError, RateLimitError, TierUnavailableError
 
 BODY = dict(sex="female", weight_kg=64, height_cm=170, age=31, activity_level="active", goal="maintain")
 

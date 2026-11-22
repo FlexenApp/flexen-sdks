@@ -13,7 +13,7 @@ h11==0.16.0
 httpcore==1.0.9
     # via httpx
 httpx==0.28.1
-    # via flexen (pyproject.toml)
+    # via flexenai (pyproject.toml)
 idna==3.20
     # via
     #   anyio
@@ -25,13 +25,13 @@ packaging==26.3
 pluggy==1.7.0
     # via pytest
 pydantic==2.14.4
-    # via flexen (pyproject.toml)
+    # via flexenai (pyproject.toml)
 pydantic-core==2.50.5
     # via pydantic
 pygments==2.21.0
     # via pytest
 pytest==9.2.0
-    # via flexen (pyproject.toml)
+    # via flexenai (pyproject.toml)
 typing-extensions==4.16.0
     # via
     #   anyio

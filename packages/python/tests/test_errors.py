@@ -5,7 +5,7 @@ import pickle
 import pytest
 
 from conftest import TEST_KEY, Fake, Reply, error_body
-from flexen import (
+from flexenai import (
     ERROR_CLASS_BY_CODE,
     ERROR_CODES,
     AccountSuspendedError,

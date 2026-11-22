@@ -6,7 +6,7 @@ import anyio
 import pytest
 
 from conftest import OK_HEADERS, TEST_KEY, Fake, Reply, error_body
-from flexen import (
+from flexenai import (
     AsyncFlexen,
     Flexen,
     InsufficientCreditsError,

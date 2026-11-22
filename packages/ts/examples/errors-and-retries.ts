@@ -2,7 +2,7 @@
  * Error classes, retries, timeout and idempotency.
  * Run: FLEXEN_API_KEY=flx_test_… npx tsx examples/errors-and-retries.ts
  */
-import { APIError, Flexen, InsufficientCreditsError, RateLimitError, TierUnavailableError } from '@flexen/api'
+import { APIError, Flexen, InsufficientCreditsError, RateLimitError, TierUnavailableError } from '@flexenai/api'
 
 const flexen = new Flexen({ maxRetries: 3, timeoutMs: 30_000 })
 

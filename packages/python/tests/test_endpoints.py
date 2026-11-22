@@ -6,7 +6,7 @@ from typing import Any, Callable
 import pytest
 
 from conftest import EXAMPLES, OK_HEADERS, TEST_KEY, Fake, Reply
-from flexen import DEFAULT_TIER, NOT_AVAILABLE, OPERATIONS, TIER_IDS, TIERS, AsyncFlexen, Flexen, InvalidInputError, TierUnavailableError
+from flexenai import DEFAULT_TIER, NOT_AVAILABLE, OPERATIONS, TIER_IDS, TIERS, AsyncFlexen, Flexen, InvalidInputError, TierUnavailableError
 
 ex = EXAMPLES
 RECIPE = {"id": "r1", "name": "Linsensuppe", "per_100g": {"kcal": 92, "protein_g": 5.4, "carbs_g": 11.8, "fat_g": 2.0}}

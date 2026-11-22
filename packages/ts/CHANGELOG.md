@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `@flexen/api`. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [SemVer](https://semver.org/).
+All notable changes to `@flexenai/api`. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 

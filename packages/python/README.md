@@ -1,4 +1,4 @@
-# flexen
+# flexenai
 
 Official Python client for the Flexen API: nutrition from text and photos, food search, barcode lookup, goal calculator, your own food catalog and your account balance.
 
@@ -11,12 +11,12 @@ Deutsch: [README.de.md](./README.de.md)
 
 ## Quick start
 
-1. Install: `pip install flexen`
+1. Install: `pip install flexenai`
 2. Set your key: `export FLEXEN_API_KEY=flx_live_…` (create keys in the Flexen console; `flx_test_…` keys return fixed examples and cost nothing)
 3. Call the API:
 
 ```python
-from flexen import Flexen
+from flexenai import Flexen
 
 client = Flexen()  # reads FLEXEN_API_KEY
 res = client.nutrition.text("2 slices of wholemeal bread with gouda and an apple")
@@ -53,7 +53,7 @@ Names come as the source lists them (USDA only in English). Every result names i
 ### Handling insufficient credits
 
 ```python
-from flexen import APIError, DailyLimitReachedError, InsufficientCreditsError
+from flexenai import APIError, DailyLimitReachedError, InsufficientCreditsError
 
 try:
     client.nutrition.text("porridge with blueberries")
@@ -69,7 +69,7 @@ except APIError as e:
 
 ```python
 import asyncio
-from flexen import AsyncFlexen
+from flexenai import AsyncFlexen
 
 async def main() -> None:
     async with AsyncFlexen() as client:
@@ -123,11 +123,11 @@ Hint, instructions, context and known weight change the measured chain. The resp
 | `catalog.delete_all()` / `catalog.export()` | DELETE /v1/catalog, GET /v1/catalog/export | free |
 | `account.balance()` / `account.usage(from_, to)` | /v1/account/… | free |
 
-1 credit = 0.1 cent net. Prices and response field names are preliminary in the contract. `flexen.OPERATIONS` lists method, path, state and price of every endpoint; all contract models are in `flexen.types`.
+1 credit = 0.1 cent net. Prices and response field names are preliminary in the contract. `flexenai.OPERATIONS` lists method, path, state and price of every endpoint; all contract models are in `flexenai.types`.
 
 - `nutrition/correct` only recalculates, without the model, and costs nothing.
 - Tier `max` is not available yet: the API answers `422 tier_unavailable` (`TierUnavailableError`). Leave out `tier` for `light`. With a test key, `max` returns the same fixed example as `light`. `TIERS` lists the state per endpoint.
-- Not available (announced as "later" in the contract, no methods in this SDK): `flexen.NOT_AVAILABLE` lists them (pantry photo, recipe ideas, micronutrients, training plan).
+- Not available (announced as "later" in the contract, no methods in this SDK): `flexenai.NOT_AVAILABLE` lists them (pantry photo, recipe ideas, micronutrients, training plan).
 
 ## Results
 
@@ -182,7 +182,7 @@ client.nutrition.text("banana", timeout=30, max_retries=1, idempotency_key="orde
 ## Configuration
 
 ```python
-from flexen import Flexen, RetryConfig
+from flexenai import Flexen, RetryConfig
 
 client = Flexen(
     api_key="flx_live_…",              # default: FLEXEN_API_KEY
@@ -204,4 +204,4 @@ uv pip install --python .venv/bin/python -r requirements-dev.lock
 .venv/bin/python -m pytest -q
 ```
 
-`src/flexen/_generated.py` is generated from the contract (`npm run generate` in the repository root); do not edit it by hand. `npm run check:contract` fails if the SDK drifts from the contract.
+`src/flexenai/_generated.py` is generated from the contract (`npm run generate` in the repository root); do not edit it by hand. `npm run check:contract` fails if the SDK drifts from the contract.

@@ -2,7 +2,7 @@
  * Nutrition from a photo (beta).
  * Run: FLEXEN_API_KEY=flx_test_… npx tsx examples/photo.ts ./lunch.jpg
  */
-import { Flexen, InvalidInputError, LIMITS } from '@flexen/api'
+import { Flexen, InvalidInputError, LIMITS } from '@flexenai/api'
 
 const file = process.argv[2]
 if (!file) throw new Error('usage: photo.ts <image file>')
