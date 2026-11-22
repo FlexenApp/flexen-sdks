@@ -9,7 +9,7 @@ import {
 } from './errors.js'
 import { OPERATIONS, type OperationId } from './generated/contract.js'
 
-export const VERSION = '0.1.0'
+export const VERSION = '0.1.1'
 export const DEFAULT_BASE_URL = 'https://api.flexen.co'
 export const DEFAULT_TIMEOUT_MS = 60_000
 export const DEFAULT_MAX_RETRIES = 3

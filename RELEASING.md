@@ -1,6 +1,6 @@
 # Releasing
 
-Status: version 0.1.0 of both packages is prepared. Nothing is published. Publishing is a decision of the account owner.
+Status: `flexenai` 0.1.0 is on PyPI (from the workflow, 2026-11-22). `@flexenai/api` 0.1.0 is on npm (published by hand, 2026-11-22); 0.1.1 is the first npm release from the workflow. The npm trusted publisher only stages a release (`npm stage publish`): the account owner approves it on npmjs.com before it is public.
 
 | Package | Registry | Tag | Job in `.github/workflows/publish.yml` |
 | --- | --- | --- | --- |

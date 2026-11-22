@@ -4,7 +4,13 @@ All notable changes to `@flexenai/api`. Format: [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
-## [0.1.0] - not published yet
+## [0.1.1] - 2026-11-22
+
+### Changed
+
+- First release from the `publish.yml` workflow with trusted publishing and a provenance statement. The code is the same as 0.1.0.
+
+## [0.1.0] - 2026-11-22
 
 ### Added
 

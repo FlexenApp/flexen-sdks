@@ -4,7 +4,7 @@ All notable changes to `flexenai`. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
-## [0.1.0] - not published yet
+## [0.1.0] - 2026-11-22
 
 ### Added
 
