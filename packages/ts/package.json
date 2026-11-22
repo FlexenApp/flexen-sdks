@@ -1,9 +1,31 @@
 {
   "name": "@flexen/api",
   "version": "0.1.0",
-  "private": true,
   "description": "Official TypeScript client for the Flexen API (nutrition from text and photos, food search, barcode, goals, catalog, account).",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "author": "Flexen UG (haftungsbeschränkt)",
+  "homepage": "https://flexen.co/developers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlexenApp/flexen-sdks.git",
+    "directory": "packages/ts"
+  },
+  "bugs": {
+    "email": "support@flexen.co"
+  },
+  "keywords": [
+    "flexen",
+    "nutrition",
+    "calories",
+    "food",
+    "barcode",
+    "api",
+    "sdk"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -22,12 +44,14 @@
     "dist",
     "README.md",
     "README.de.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

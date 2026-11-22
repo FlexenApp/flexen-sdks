@@ -28,7 +28,7 @@ The source of truth is the public contract on the website: `src/content/develope
 3. ts: `tsc` over the SDK and its tests. A new operation or error code in the generated types breaks the build until it has an SDK binding and a test.
 4. python: every operation is bound in `Flexen` and `AsyncFlexen` with exactly the contract's field names; every error code has a class.
 
-Without a website checkout (default path `$FLEXEN_CONTRACT_SRC`, else `/Volumes/BuildSSD/worktrees/web-relaunch-2`) step 1 is skipped and the output says so. `npm run test:scripts` runs positive controls: each kind of contract change must be reported.
+Without a website checkout (default path `$FLEXEN_CONTRACT_SRC`, else `/Volumes/BuildSSD/worktrees/web-relaunch-2`; the live contract is the branch that is deployed, on 2026-11-22 `leonard/web-qa-fix`) step 1 is skipped and the output says so. `npm run test:scripts` runs positive controls: each kind of contract change must be reported.
 
 After a contract change: `npm run contract:pull`, `npm run generate`, adapt the SDKs, `npm run check:contract`.
 
@@ -43,4 +43,8 @@ npm run test:scripts             # positive controls of the drift check
 npm run check:contract
 ```
 
-Nothing here is published to npm or PyPI yet.
+## Status
+
+Version 0.1.0 of both packages is prepared against the live contract (website `2b02040`). Nothing is published to npm or PyPI yet, so `npm install @flexen/api` and `pip install flexen` do not work yet. How a release happens: [RELEASING.md](RELEASING.md). License: MIT ([LICENSE](LICENSE)).
+
+Examples: [`packages/ts/examples`](packages/ts/examples), [`packages/python/examples`](packages/python/examples).

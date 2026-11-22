@@ -96,3 +96,13 @@ test('end to end: a changed snapshot makes check-contract exit 1 and name the fi
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+test('release tag must match the package version', async () => {
+  const { check, versions } = await import('./release-version.mjs')
+  const v = versions()
+  assert.deepEqual(check(), [])
+  assert.deepEqual(check(`ts-v${v.ts[0]}`), [])
+  assert.deepEqual(check(`py-v${v.py[0]}`), [])
+  assert.match(check('ts-v9.9.9').join('\n'), /does not match version/)
+  assert.match(check('v0.1.0').join('\n'), /is not ts-v<version> or py-v<version>/)
+})

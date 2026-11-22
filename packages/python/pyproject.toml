@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.25"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -8,12 +8,17 @@ version = "0.1.0"
 description = "Official Python client for the Flexen API (nutrition from text and photos, food search, barcode, goals, catalog, account)."
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Flexen UG (haftungsbeschränkt)", email = "support@flexen.co" }]
+keywords = ["flexen", "nutrition", "calories", "food", "barcode", "api", "sdk"]
 dependencies = [
     "httpx>=0.27,<1",
     "pydantic>=2.7,<3",
 ]
 classifiers = [
-    "Private :: Do Not Upload",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -22,11 +27,19 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.urls]
+Homepage = "https://flexen.co/developers"
+Repository = "https://github.com/FlexenApp/flexen-sdks"
+Changelog = "https://github.com/FlexenApp/flexen-sdks/blob/main/packages/python/CHANGELOG.md"
+
 [project.optional-dependencies]
 dev = ["pytest==9.2.0"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/flexen"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/flexen", "README.md", "README.de.md", "CHANGELOG.md", "LICENSE", "examples"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
