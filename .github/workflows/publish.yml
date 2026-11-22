@@ -57,7 +57,7 @@ jobs:
       - run: npm install -g npm@^11.5.1
       - run: npm ci
       - run: npm run build:ts
-      - run: npm publish -w @flexenai/api --access public --provenance
+      - run: npm stage publish -w @flexenai/api --access public --provenance
 
   pypi:
     if: startsWith(github.ref, 'refs/tags/py-v')
