@@ -275,7 +275,36 @@
       ],
       "lang": "de"
     },
-    "requestExamples": {},
+    "requestExamples": {
+      "oz-kj": {
+        "items": [
+          {
+            "name": "Vollkornbrot mit Gouda und Apfel",
+            "grams": 250,
+            "per_100g": {
+              "kcal": 159,
+              "protein_g": 7,
+              "carbs_g": 20.2,
+              "fat_g": 5.4
+            },
+            "source": "model"
+          },
+          {
+            "name": "Butter, salted",
+            "grams": 10,
+            "per_100g": {
+              "kcal": 717,
+              "protein_g": 0.9,
+              "carbs_g": 0.1,
+              "fat_g": 81.1
+            },
+            "source": "usda_fdc"
+          }
+        ],
+        "mass_unit": "oz",
+        "energy_unit": "kj"
+      }
+    },
     "response": {
       "items": [
         {
@@ -336,20 +365,112 @@
         "fat_g": 21.6
       }
     },
-    "responseExamples": {}
+    "responseExamples": {
+      "oz-kj": {
+        "items": [
+          {
+            "name": "Vollkornbrot mit Gouda und Apfel",
+            "grams": {
+              "value": 250,
+              "low": 250,
+              "high": 250
+            },
+            "oz": {
+              "value": 8.8,
+              "low": 8.8,
+              "high": 8.8
+            },
+            "kcal": {
+              "value": 398,
+              "low": 398,
+              "high": 398
+            },
+            "kj": {
+              "value": 1663,
+              "low": 1663,
+              "high": 1663
+            },
+            "protein_g": 17.5,
+            "carbs_g": 50.5,
+            "fat_g": 13.5,
+            "per_100g": {
+              "kcal": 159,
+              "protein_g": 7,
+              "carbs_g": 20.2,
+              "fat_g": 5.4,
+              "kj": 665.3
+            },
+            "source": "model"
+          },
+          {
+            "name": "Butter, salted",
+            "grams": {
+              "value": 10,
+              "low": 10,
+              "high": 10
+            },
+            "oz": {
+              "value": 0.4,
+              "low": 0.4,
+              "high": 0.4
+            },
+            "kcal": {
+              "value": 72,
+              "low": 72,
+              "high": 72
+            },
+            "kj": {
+              "value": 300,
+              "low": 300,
+              "high": 300
+            },
+            "protein_g": 0.1,
+            "carbs_g": 0,
+            "fat_g": 8.1,
+            "per_100g": {
+              "kcal": 717,
+              "protein_g": 0.9,
+              "carbs_g": 0.1,
+              "fat_g": 81.1,
+              "kj": 2999.9
+            },
+            "source": "usda_fdc"
+          }
+        ],
+        "total": {
+          "kcal": {
+            "value": 470,
+            "low": 470,
+            "high": 470
+          },
+          "kj": {
+            "value": 1963,
+            "low": 1963,
+            "high": 1963
+          },
+          "protein_g": 17.6,
+          "carbs_g": 50.5,
+          "fat_g": 21.6,
+          "oz": {
+            "value": 9.2,
+            "low": 9.2,
+            "high": 9.2
+          }
+        }
+      }
+    }
   },
   "nutritionPhoto": {
     "params": {},
     "request": {
       "image_base64": "<Bild als Base64>",
-      "lang": "de",
-      "tier": "economy"
+      "tier": "light"
     },
     "requestExamples": {
       "custom_foods": {
         "image_base64": "<Bild als Base64>",
         "lang": "de",
-        "tier": "economy",
+        "tier": "light",
         "custom_foods": [
           {
             "name": "Steak mit Kürbis und Rucola, Mittagskarte",
@@ -361,6 +482,10 @@
             }
           }
         ]
+      },
+      "known-grams": {
+        "image_base64": "<Bild als Base64>",
+        "known_grams": 267
       }
     },
     "response": {
@@ -413,9 +538,13 @@
       "needs_review": false,
       "source": "model",
       "beta": true,
-      "tier": "economy",
+      "tier": "light",
       "model": "glm-5.3-flash",
-      "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"
+      "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)",
+      "measured": true,
+      "unmeasured_because": [],
+      "chain_version": "2.1",
+      "name_lang": null
     },
     "responseExamples": {
       "custom_foods": {
@@ -468,9 +597,75 @@
         "needs_review": false,
         "source": "customer_inline",
         "beta": true,
-        "tier": "economy",
+        "tier": "light",
         "model": "glm-5.3-flash",
-        "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"
+        "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)",
+        "measured": false,
+        "unmeasured_because": [
+          "own_data"
+        ],
+        "chain_version": "2.1",
+        "name_lang": null
+      },
+      "known-grams": {
+        "dish": "Sliced steak with roasted acorn squash and arugula salad",
+        "grams": {
+          "value": 267,
+          "low": 267,
+          "high": 267
+        },
+        "kcal": {
+          "value": 291,
+          "low": 291,
+          "high": 291
+        },
+        "protein_g": 25.7,
+        "carbs_g": 14.6,
+        "fat_g": 14.1,
+        "per_100g": {
+          "kcal": 109.1,
+          "protein_g": 9.64,
+          "carbs_g": 5.45,
+          "fat_g": 5.27
+        },
+        "components": [
+          {
+            "name": "Sliced steak with roasted acorn squash and arugula salad",
+            "grams": {
+              "value": 267,
+              "low": 267,
+              "high": 267
+            },
+            "kcal": {
+              "value": 291,
+              "low": 291,
+              "high": 291
+            },
+            "protein_g": 25.7,
+            "carbs_g": 14.6,
+            "fat_g": 14.1,
+            "per_100g": {
+              "kcal": 109.1,
+              "protein_g": 9.64,
+              "carbs_g": 5.45,
+              "fat_g": 5.27
+            }
+          }
+        ],
+        "components_granularity": "dish",
+        "confidence": 1,
+        "needs_review": false,
+        "source": "model",
+        "beta": true,
+        "tier": "light",
+        "model": "glm-5.3-flash",
+        "prompt_version": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)",
+        "measured": false,
+        "unmeasured_because": [
+          "known_grams"
+        ],
+        "chain_version": "2.1",
+        "name_lang": null
       }
     }
   },
@@ -479,13 +674,13 @@
     "request": {
       "text": "2 Scheiben Vollkornbrot mit Gouda und ein Apfel",
       "lang": "de",
-      "tier": "economy"
+      "tier": "light"
     },
     "requestExamples": {
       "custom_foods": {
         "text": "Linsensuppe",
         "lang": "de",
-        "tier": "economy",
+        "tier": "light",
         "custom_foods": [
           {
             "name": "Linsensuppe nach Hausrezept",
@@ -498,6 +693,28 @@
             "grams": 350
           }
         ]
+      },
+      "units-eu7": {
+        "text": "2 Scheiben Vollkornbrot mit Gouda und ein Apfel",
+        "lang": "de",
+        "energy_unit": "kj",
+        "nutrients": "eu7",
+        "provenance": "field"
+      },
+      "hint-context": {
+        "text": "2 Scheiben Vollkornbrot mit Gouda und ein Apfel",
+        "hint": "Die Brotscheiben sind dick geschnitten.",
+        "country": "DE",
+        "meal": "lunch"
+      },
+      "database-only": {
+        "text": "apple",
+        "model": false,
+        "sources": [
+          "customer_inline",
+          "usda_fdc"
+        ],
+        "known_grams": 150
       }
     },
     "response": {
@@ -564,9 +781,13 @@
         "carbs_g": 60.6,
         "fat_g": 16.2
       },
-      "tier": "economy",
+      "tier": "light",
       "model": "glm-5.3-flash",
-      "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)"
+      "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+      "measured": true,
+      "unmeasured_because": [],
+      "chain_version": "2.3",
+      "name_lang": "de"
     },
     "responseExamples": {
       "custom_foods": {
@@ -633,9 +854,322 @@
           "carbs_g": 41.3,
           "fat_g": 7
         },
-        "tier": "economy",
+        "tier": "light",
         "model": "glm-5.3-flash",
-        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)"
+        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+        "measured": false,
+        "unmeasured_because": [
+          "own_data"
+        ],
+        "chain_version": "2.3",
+        "name_lang": null
+      },
+      "units-eu7": {
+        "items": [
+          {
+            "name": "Vollkornbrot mit Gouda und Apfel",
+            "quantity": "300 g",
+            "grams": {
+              "value": 300,
+              "low": 273,
+              "high": 330
+            },
+            "kcal": {
+              "value": 477,
+              "low": 434,
+              "high": 525
+            },
+            "kj": {
+              "value": 1996,
+              "low": 1816,
+              "high": 2195
+            },
+            "protein_g": 21,
+            "carbs_g": 60.6,
+            "fat_g": 16.2,
+            "nutrients": {
+              "saturated_fat_g": 9,
+              "sugars_g": 16.5,
+              "salt_g": 2.4
+            },
+            "per_100g": {
+              "kcal": 159,
+              "protein_g": 7,
+              "carbs_g": 20.2,
+              "fat_g": 5.4,
+              "kj": 665.3,
+              "saturated_fat_g": 3,
+              "sugars_g": 5.5,
+              "salt_g": 0.8
+            },
+            "components": [
+              {
+                "name": "Vollkornbrot mit Gouda und Apfel",
+                "grams": {
+                  "value": 300,
+                  "low": 273,
+                  "high": 330
+                },
+                "kcal": {
+                  "value": 477,
+                  "low": 434,
+                  "high": 525
+                },
+                "kj": {
+                  "value": 1996,
+                  "low": 1816,
+                  "high": 2195
+                },
+                "protein_g": 21,
+                "carbs_g": 60.6,
+                "fat_g": 16.2,
+                "nutrients": {
+                  "saturated_fat_g": 9,
+                  "sugars_g": 16.5,
+                  "salt_g": 2.4
+                },
+                "per_100g": {
+                  "kcal": 159,
+                  "protein_g": 7,
+                  "carbs_g": 20.2,
+                  "fat_g": 5.4,
+                  "kj": 665.3,
+                  "saturated_fat_g": 3,
+                  "sugars_g": 5.5,
+                  "salt_g": 0.8
+                }
+              }
+            ],
+            "components_granularity": "dish",
+            "confidence": 0.91,
+            "needs_review": false,
+            "source": "model",
+            "provenance": {
+              "grams": {
+                "source": "model",
+                "as_of": null,
+                "derived": null
+              },
+              "kcal": {
+                "source": "model",
+                "as_of": null,
+                "derived": null
+              },
+              "kj": {
+                "source": "model",
+                "as_of": null,
+                "derived": "kcal_to_kj"
+              },
+              "protein_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": null
+              },
+              "carbs_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": null
+              },
+              "fat_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": null
+              },
+              "saturated_fat_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": "model_extra"
+              },
+              "sugars_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": "model_extra"
+              },
+              "salt_g": {
+                "source": "model",
+                "as_of": null,
+                "derived": "model_extra"
+              }
+            }
+          }
+        ],
+        "total": {
+          "kcal": {
+            "value": 477,
+            "low": 434,
+            "high": 525
+          },
+          "kj": {
+            "value": 1996,
+            "low": 1816,
+            "high": 2195
+          },
+          "protein_g": 21,
+          "carbs_g": 60.6,
+          "fat_g": 16.2,
+          "nutrients": {
+            "saturated_fat_g": 9,
+            "sugars_g": 16.5,
+            "salt_g": 2.4
+          }
+        },
+        "tier": "light",
+        "model": "glm-5.3-flash",
+        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+        "measured": true,
+        "unmeasured_because": [],
+        "chain_version": "2.3",
+        "name_lang": "de"
+      },
+      "hint-context": {
+        "items": [
+          {
+            "name": "Vollkornbrot mit Gouda und Apfel",
+            "quantity": "340 g",
+            "grams": {
+              "value": 340,
+              "low": 309,
+              "high": 374
+            },
+            "kcal": {
+              "value": 541,
+              "low": 492,
+              "high": 595
+            },
+            "protein_g": 23.8,
+            "carbs_g": 68.7,
+            "fat_g": 18.4,
+            "per_100g": {
+              "kcal": 159.1,
+              "protein_g": 7,
+              "carbs_g": 20.21,
+              "fat_g": 5.41
+            },
+            "components": [
+              {
+                "name": "Vollkornbrot mit Gouda und Apfel",
+                "grams": {
+                  "value": 340,
+                  "low": 309,
+                  "high": 374
+                },
+                "kcal": {
+                  "value": 541,
+                  "low": 492,
+                  "high": 595
+                },
+                "protein_g": 23.8,
+                "carbs_g": 68.7,
+                "fat_g": 18.4,
+                "per_100g": {
+                  "kcal": 159.1,
+                  "protein_g": 7,
+                  "carbs_g": 20.21,
+                  "fat_g": 5.41
+                }
+              }
+            ],
+            "components_granularity": "dish",
+            "confidence": 0.91,
+            "needs_review": false,
+            "source": "model"
+          }
+        ],
+        "total": {
+          "kcal": {
+            "value": 541,
+            "low": 492,
+            "high": 595
+          },
+          "protein_g": 23.8,
+          "carbs_g": 68.7,
+          "fat_g": 18.4
+        },
+        "tier": "light",
+        "model": "glm-5.3-flash",
+        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+        "measured": false,
+        "unmeasured_because": [
+          "hint",
+          "context"
+        ],
+        "chain_version": "2.3",
+        "name_lang": null
+      },
+      "database-only": {
+        "items": [
+          {
+            "name": "Apples, raw, with skin",
+            "quantity": "150 g",
+            "grams": {
+              "value": 150,
+              "low": 150,
+              "high": 150
+            },
+            "kcal": {
+              "value": 78,
+              "low": 78,
+              "high": 78
+            },
+            "protein_g": 0.5,
+            "carbs_g": 20.7,
+            "fat_g": 0.3,
+            "per_100g": {
+              "kcal": 52,
+              "protein_g": 0.3,
+              "carbs_g": 13.8,
+              "fat_g": 0.2
+            },
+            "components": [
+              {
+                "name": "Apples, raw, with skin",
+                "grams": {
+                  "value": 150,
+                  "low": 150,
+                  "high": 150
+                },
+                "kcal": {
+                  "value": 78,
+                  "low": 78,
+                  "high": 78
+                },
+                "protein_g": 0.5,
+                "carbs_g": 20.7,
+                "fat_g": 0.3,
+                "per_100g": {
+                  "kcal": 52,
+                  "protein_g": 0.3,
+                  "carbs_g": 13.8,
+                  "fat_g": 0.2
+                }
+              }
+            ],
+            "components_granularity": "dish",
+            "confidence": 1,
+            "needs_review": false,
+            "source": "usda_fdc"
+          }
+        ],
+        "total": {
+          "kcal": {
+            "value": 78,
+            "low": 78,
+            "high": 78
+          },
+          "protein_g": 0.5,
+          "carbs_g": 20.7,
+          "fat_g": 0.3
+        },
+        "tier": "light",
+        "model": null,
+        "prompt_version": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
+        "measured": false,
+        "unmeasured_because": [
+          "known_grams",
+          "database"
+        ],
+        "chain_version": "2.3",
+        "name_lang": "en"
       }
     }
   }

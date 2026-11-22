@@ -22,8 +22,14 @@ from ._errors import (
     ServiceUnavailableError,
     TierUnavailableError,
     UnexpectedResponseError,
+    IdempotencyInProgressError,
+    IpNotAllowedError,
+    KeyBudgetReachedError,
+    KeyExpiredError,
+    KeyScopeDeniedError,
+    MonthlyBudgetReachedError,
 )
-from ._generated import CONTRACT_SOURCE, DEFAULT_TIER, ERROR_CODES, LIMITS, NOT_AVAILABLE, OPERATIONS, PROMPT_VERSION, RESPONSE_HEADERS
+from ._generated import CONTRACT_SOURCE, DEFAULT_TIER, TIER_IDS, TIERS, ERROR_CODES, LIMITS, NOT_AVAILABLE, OPERATIONS, PROMPT_VERSION, RESPONSE_HEADERS
 from ._photo import IMAGE_MAX_BYTES, decoded_base64_bytes
 from ._version import __version__
 
@@ -66,6 +72,14 @@ __all__ = [
     "ServiceUnavailableError",
     "TierUnavailableError",
     "UnexpectedResponseError",
+    "IdempotencyInProgressError",
+    "IpNotAllowedError",
+    "KeyBudgetReachedError",
+    "KeyExpiredError",
+    "KeyScopeDeniedError",
+    "MonthlyBudgetReachedError",
+    "TIERS",
+    "TIER_IDS",
     "__version__",
     "compute_retry_delay",
     "decoded_base64_bytes",

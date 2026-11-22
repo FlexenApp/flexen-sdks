@@ -74,8 +74,20 @@ export class AuthenticationError extends APIError {}
 export class InsufficientCreditsError extends APIError {}
 /** 402 daily_limit_reached: the daily spending limit of the account has been reached. */
 export class DailyLimitReachedError extends APIError {}
+/** 402 monthly_budget_reached: the monthly budget of the account has been reached (until the end of the calendar month, UTC). */
+export class MonthlyBudgetReachedError extends APIError {}
+/** 402 key_budget_reached: the monthly limit of this key has been reached. */
+export class KeyBudgetReachedError extends APIError {}
 /** 403 account_suspended */
 export class AccountSuspendedError extends APIError {}
+/** 403 key_expired: the key has passed its expiry date. */
+export class KeyExpiredError extends APIError {}
+/** 403 key_scope_denied: this key may not call this endpoint. */
+export class KeyScopeDeniedError extends APIError {}
+/** 403 ip_not_allowed: the call comes from an IP address that is not allowed for this key. */
+export class IpNotAllowedError extends APIError {}
+/** 409 idempotency_in_progress: a call with the same Idempotency-Key is still running. Not retried; see retryAfterSeconds. */
+export class IdempotencyInProgressError extends APIError {}
 /** 404 not_found */
 export class NotFoundError extends APIError {}
 /** 422 invalid_request: the message names the fields concerned. */
@@ -99,8 +111,14 @@ export const ERROR_CLASS_BY_CODE: Record<ErrorCode, APIErrorClass> = {
   invalid_key: AuthenticationError,
   insufficient_credits: InsufficientCreditsError,
   daily_limit_reached: DailyLimitReachedError,
+  monthly_budget_reached: MonthlyBudgetReachedError,
+  key_budget_reached: KeyBudgetReachedError,
   account_suspended: AccountSuspendedError,
+  key_expired: KeyExpiredError,
+  key_scope_denied: KeyScopeDeniedError,
+  ip_not_allowed: IpNotAllowedError,
   not_found: NotFoundError,
+  idempotency_in_progress: IdempotencyInProgressError,
   invalid_request: InvalidRequestError,
   tier_unavailable: TierUnavailableError,
   rate_limited: RateLimitError,
@@ -116,6 +134,7 @@ const ERROR_CLASS_BY_STATUS: Record<number, APIErrorClass> = {
   402: InsufficientCreditsError,
   403: AccountSuspendedError,
   404: NotFoundError,
+  409: IdempotencyInProgressError,
   422: InvalidRequestError,
   429: RateLimitError,
   500: InternalServerError,

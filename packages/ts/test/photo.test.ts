@@ -34,9 +34,9 @@ describe('photo upload', () => {
   })
 
   it('sends bytes as image_base64 with the other fields', async () => {
-    const res = await client.nutrition.photo({ image: JPEG, lang: 'de', tier: 'economy' })
+    const res = await client.nutrition.photo({ image: JPEG, lang: 'de', tier: 'light' })
     const body = fake.requests[0]!.json as Record<string, unknown>
-    expect(body).toEqual({ image_base64: Buffer.from(JPEG).toString('base64'), lang: 'de', tier: 'economy' })
+    expect(body).toEqual({ image_base64: Buffer.from(JPEG).toString('base64'), lang: 'de', tier: 'light' })
     expect(res.creditsCharged).toBe(2)
     expect(res.data.beta).toBe(true)
   })

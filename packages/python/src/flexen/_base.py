@@ -54,6 +54,8 @@ class FlexenResponse(Generic[T]):
     #: X-Credits-Remaining: balance after the call; credits reserved for running calls are not yet deducted.
     credits_remaining: int | None
     headers: httpx.Headers = field(repr=False)
+    #: Idempotent-Replayed: True if the API answered from an earlier call with the same Idempotency-Key (nothing was deducted again).
+    idempotent_replayed: bool = False
 
 
 def int_header(headers: httpx.Headers, name: str) -> int | None:
@@ -115,8 +117,11 @@ def build_url(base_url: str, op: str, params: Mapping[str, Any] | None) -> str:
             if not isinstance(v, str) or v == "":
                 raise InvalidInputError(f"{name} is required and must be a non-empty string")
             path = path.replace("{" + name + "}", quote(v, safe=""))
+        elif where != "query":
+            continue  # header parameters (Idempotency-Key) are set from the call options
         elif v is not None:
-            query.append((name, v if isinstance(v, str) else str(v)))
+            # Lists go comma-separated (form style without explode), as the contract says: sources=customer_catalog,usda_fdc
+            query.append((name, v if isinstance(v, str) else ",".join(str(x) for x in v) if isinstance(v, (list, tuple)) else str(v)))
         elif required:
             raise InvalidInputError(f"{name} is required")
     url = base_url.rstrip("/") + path
@@ -185,6 +190,7 @@ def parse_success(op: str, res: httpx.Response) -> FlexenResponse[Any]:
         credits_charged=int_header(res.headers, "X-Credits-Charged"),
         credits_remaining=int_header(res.headers, "X-Credits-Remaining"),
         headers=res.headers,
+        idempotent_replayed=res.headers.get("Idempotent-Replayed") == "true",
     )
 
 

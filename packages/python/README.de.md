@@ -82,16 +82,42 @@ asyncio.run(main())
 
 Einen asynchronen Aufruf brichst du ab, indem du seinen Task abbrichst (etwa mit `asyncio.wait_for` oder `anyio.move_on_after`). Ein Aufruf, der vor der Antwort abgebrochen wird, kostet nichts.
 
+## Einstellungen je Aufruf
+
+Jeder Aufruf nimmt die Einstellungen des Vertrags: Sprache, Einheiten, Nährstoff-Umfang, Herkunft je Feld, Hinweis, bekanntes Gewicht, Kontext (Land, Mahlzeit, Ort), Spannen-Schwelle, Quellen, eigene Anweisung, Kettenfassung, Stufe und Profil.
+
+```python
+res = client.nutrition.text(
+    "Skyr mit Heidelbeeren",
+    lang="sv",                  # 12 Sprachen; auch die Sprache der Namen
+    energy_unit="kj",           # kcal (Standard) oder kj
+    mass_unit="oz",             # g (Standard) oder oz
+    nutrients="eu7",            # macros (Standard), eu7 oder full
+    provenance="field",         # Herkunft je Feld statt je Eintrag
+    known_grams=250,            # das Gewicht ist bekannt
+    hint="ohne Zuckerzusatz",      # geht in den Prompt
+    country="SE", meal="breakfast",
+    sources=["customer_catalog", "usda_fdc", "model"],
+    profile="app-se",           # ein Profil aus der Konsole
+)
+print(res.data.measured, res.data.unmeasured_because)
+
+# nur Datenbanken, ohne Modell (nur Text; braucht eine Menge)
+client.nutrition.text("Skyr", model=False, known_grams=150, sources=["usda_fdc"])
+```
+
+Hinweis, Anweisung, Kontext und bekanntes Gewicht verändern die gemessene Kette. Die Antwort trägt dann `measured: false` und nennt den Grund in `unmeasured_because`. `instructions` und `nutrients: "eu7"` aus dem Modell kosten je 1 Credit mehr. Die Quellen `bls`, `ciqual`, `fineli` und `livsmedelsverket` stehen im Vertrag, liefern aber erst Daten, wenn sie in der API eingeschaltet sind; bis dahin tragen sie nichts bei, und ein Aufruf ohne Modell, der sich auf sie stützt, bekommt `503 service_unavailable`.
+
 ## Endpunkte
 
 | Methode | Endpunkt | Preis (vorläufig, Credits) |
 | --- | --- | --- |
 | `nutrition.text(text, ...)` | POST /v1/nutrition/text | 1 |
 | `nutrition.photo(image_path= / image_bytes= / image_base64=, ...)` | POST /v1/nutrition/photo (Beta) | 2 |
-| `nutrition.correct(items, ...)` | POST /v1/nutrition/correct | offen, siehe unten |
-| `foods.search(q, lang=)` | GET /v1/foods/search | 1 |
-| `foods.barcode(code, lang=)` | GET /v1/foods/barcode/{code} | 1 |
-| `goals.calculate(sex=, weight_kg=, height_cm=, age=, activity_level=, goal=)` | POST /v1/goals/calculate | 1 |
+| `nutrition.correct(items, ...)` | POST /v1/nutrition/correct | 0 |
+| `foods.search(q, lang=, nutrients=, sources=, ...)` | GET /v1/foods/search | 1 |
+| `foods.barcode(code, lang=, nutrients=, sources=, ...)` | GET /v1/foods/barcode/{code} | 1 |
+| `goals.calculate(sex=, weight_kg=, height_cm=, age=, activity_level=, goal=, lang=, profile=)` | POST /v1/goals/calculate | 1 |
 | `catalog.foods.upsert / list / iterate / get / delete` | /v1/catalog/foods | kostenlos |
 | `catalog.recipes.upsert / list / iterate / get / delete` | /v1/catalog/recipes | kostenlos |
 | `catalog.delete_all()` / `catalog.export()` | DELETE /v1/catalog, GET /v1/catalog/export | kostenlos |
@@ -99,8 +125,8 @@ Einen asynchronen Aufruf brichst du ab, indem du seinen Task abbrichst (etwa mit
 
 1 Credit = 0,1 Cent netto. Preise und Feldnamen der Antworten sind im Vertrag vorläufig. `flexen.OPERATIONS` nennt Methode, Pfad, Stand und Preis jedes Endpunkts; alle Modelle des Vertrags liegen in `flexen.types`.
 
-- Der Preis von `nutrition/correct` ist im Vertrag noch offen; Live-Schlüssel können bis dahin `503 service_unavailable` bekommen.
-- Die Stufe `max` gibt es noch nicht: Die API antwortet `422 tier_unavailable` (`TierUnavailableError`). Ohne `tier` gilt `economy`.
+- `nutrition/correct` rechnet nur neu, ohne Modell, und kostet nichts.
+- Die Stufe `max` gibt es noch nicht: Die API antwortet `422 tier_unavailable` (`TierUnavailableError`). Ohne `tier` gilt `light`. Mit einem Testschlüssel liefert `max` dasselbe feste Beispiel wie `light`. `TIERS` nennt den Stand je Endpunkt.
 - Nicht verfügbar (im Vertrag als „kommt später“ angekündigt, ohne Methoden in diesem SDK): `flexen.NOT_AVAILABLE` listet sie (Kühlschrankfoto, Rezeptideen, Mikronährstoffe, Trainingsplan).
 
 ## Ergebnisse
@@ -113,6 +139,7 @@ Jede Methode liefert ein `FlexenResponse`:
 | `credits_charged` | `X-Credits-Charged` (0 mit Testschlüsseln und bei kostenlosen Endpunkten) |
 | `credits_remaining` | `X-Credits-Remaining`; für laufende Aufrufe reservierte Credits sind noch nicht abgezogen |
 | `request_id` | `X-Request-Id`; bei Rückfragen nennen |
+| `idempotent_replayed` | `Idempotent-Replayed`: `True`, wenn die Antwort aus einem früheren Aufruf mit demselben `Idempotency-Key` stammt |
 | `status_code`, `headers` | HTTP-Status und alle Kopfzeilen |
 
 ## Fehler
@@ -125,8 +152,14 @@ Alle Fehler erben von `FlexenError`. Antworten mit Fehlerstatus lösen eine Unte
 | 401 | invalid_key | `AuthenticationError` |
 | 402 | insufficient_credits | `InsufficientCreditsError` |
 | 402 | daily_limit_reached | `DailyLimitReachedError` |
+| 402 | monthly_budget_reached | `MonthlyBudgetReachedError` |
+| 402 | key_budget_reached | `KeyBudgetReachedError` |
 | 403 | account_suspended | `AccountSuspendedError` |
+| 403 | key_expired | `KeyExpiredError` |
+| 403 | key_scope_denied | `KeyScopeDeniedError` |
+| 403 | ip_not_allowed | `IpNotAllowedError` |
 | 404 | not_found | `NotFoundError` |
+| 409 | idempotency_in_progress | `IdempotencyInProgressError` |
 | 422 | invalid_request | `InvalidRequestError` |
 | 422 | tier_unavailable | `TierUnavailableError` |
 | 429 | rate_limited | `RateLimitError` |
@@ -140,7 +173,7 @@ Auf Seite des Clients: `InvalidInputError` (vor dem Senden abgelehnt, auch Pydan
 
 - Wiederholt werden nur 429 und 503, höchstens dreimal (`max_retries`), mit exponentieller Wartezeit und Zufallsanteil. `Retry-After` wird eingehalten; verlangt es mehr als `RetryConfig.max_retry_after` (60 s), kommt stattdessen der Fehler. Alles andere (übrige 4xx, 500, 504, Netzfehler) wird nie wiederholt. Laut Vertrag buchen 429 und 503 nichts ab.
 - `timeout` (Sekunden, Standard 60) ist das Zeitbudget eines Aufrufs samt Wartezeiten; läuft es ab, kommt `RequestTimeoutError`.
-- `idempotency_key="…"` geht als `Idempotency-Key` mit, bei jeder Wiederholung derselbe. Die API wertet ihn ab Plan 05 aus; bis dahin wird er ignoriert.
+- `idempotency_key="…"` geht als `Idempotency-Key` mit, bei jeder Wiederholung derselbe. Die API hält die Antwort 24 Stunden: Dieselbe Anfrage mit demselben Schlüssel liefert dieselbe Antwort, bucht nichts ab und ist am Ergebnis als wiederholt markiert (`idempotent_replayed`). Läuft der erste Aufruf noch, kommt `409 idempotency_in_progress` (`IdempotencyInProgressError`, wird nicht automatisch wiederholt).
 
 ```python
 client.nutrition.text("Banane", timeout=30, max_retries=1, idempotency_key="bestellung-4711-mahlzeit-2")

@@ -68,13 +68,40 @@ try {
 }
 ```
 
+## Einstellungen je Aufruf
+
+Jeder Aufruf nimmt die Einstellungen des Vertrags: Sprache, Einheiten, Nährstoff-Umfang, Herkunft je Feld, Hinweis, bekanntes Gewicht, Kontext (Land, Mahlzeit, Ort), Spannen-Schwelle, Quellen, eigene Anweisung, Kettenfassung, Stufe und Profil.
+
+```ts
+const res = await flexen.nutrition.text({
+  text: 'Skyr mit Heidelbeeren',
+  lang: 'sv',                 // 12 Sprachen; auch die Sprache der Namen
+  energy_unit: 'kj',          // kcal (Standard) oder kj
+  mass_unit: 'oz',            // g (Standard) oder oz
+  nutrients: 'eu7',           // macros (Standard), eu7 oder full
+  provenance: 'field',        // Herkunft je Feld statt je Eintrag
+  known_grams: 250,           // das Gewicht ist bekannt
+  hint: 'ohne Zuckerzusatz',     // geht in den Prompt
+  country: 'SE',
+  meal: 'breakfast',
+  sources: ['customer_catalog', 'usda_fdc', 'model'],
+  profile: 'app-se',          // ein Profil aus der Konsole
+})
+console.log(res.data.measured, res.data.unmeasured_because)
+
+// nur Datenbanken, ohne Modell (nur Text; braucht eine Menge)
+await flexen.nutrition.text({ text: 'Skyr', model: false, known_grams: 150, sources: ['usda_fdc'] })
+```
+
+Hinweis, Anweisung, Kontext und bekanntes Gewicht verändern die gemessene Kette. Die Antwort trägt dann `measured: false` und nennt den Grund in `unmeasured_because`. `instructions` und `nutrients: "eu7"` aus dem Modell kosten je 1 Credit mehr. Die Quellen `bls`, `ciqual`, `fineli` und `livsmedelsverket` stehen im Vertrag, liefern aber erst Daten, wenn sie in der API eingeschaltet sind; bis dahin tragen sie nichts bei, und ein Aufruf ohne Modell, der sich auf sie stützt, bekommt `503 service_unavailable`.
+
 ## Endpunkte
 
 | Methode | Endpunkt | Preis (vorläufig, Credits) |
 | --- | --- | --- |
 | `nutrition.text(body)` | POST /v1/nutrition/text | 1 |
 | `nutrition.photo(params)` | POST /v1/nutrition/photo (Beta) | 2 |
-| `nutrition.correct(body)` | POST /v1/nutrition/correct | offen, siehe unten |
+| `nutrition.correct(body)` | POST /v1/nutrition/correct | 0 |
 | `foods.search(params)` | GET /v1/foods/search | 1 |
 | `foods.barcode(params)` | GET /v1/foods/barcode/{code} | 1 |
 | `goals.calculate(body)` | POST /v1/goals/calculate | 1 |
@@ -85,8 +112,8 @@ try {
 
 1 Credit = 0,1 Cent netto. Preise und Feldnamen der Antworten sind im Vertrag vorläufig. `OPERATIONS` nennt Methode, Pfad, Stand und Preis jedes Endpunkts.
 
-- Der Preis von `nutrition/correct` ist im Vertrag noch offen; Live-Schlüssel können bis dahin `503 service_unavailable` bekommen.
-- Die Stufe `max` gibt es noch nicht: Die API antwortet `422 tier_unavailable` (`TierUnavailableError`). Ohne `tier` gilt `economy`.
+- `nutrition/correct` rechnet nur neu, ohne Modell, und kostet nichts.
+- Die Stufe `max` gibt es noch nicht: Die API antwortet `422 tier_unavailable` (`TierUnavailableError`). Ohne `tier` gilt `light`. Mit einem Testschlüssel liefert `max` dasselbe feste Beispiel wie `light`. `TIERS` nennt den Stand je Endpunkt.
 - Nicht verfügbar (im Vertrag als „kommt später“ angekündigt, ohne Methoden in diesem SDK): `NOT_AVAILABLE` listet sie (Kühlschrankfoto, Rezeptideen, Mikronährstoffe, Trainingsplan).
 
 ## Ergebnisse
@@ -99,6 +126,7 @@ Jede Methode liefert ein `FlexenResponse<T>`:
 | `creditsCharged` | `X-Credits-Charged` (0 mit Testschlüsseln und bei kostenlosen Endpunkten) |
 | `creditsRemaining` | `X-Credits-Remaining`; für laufende Aufrufe reservierte Credits sind noch nicht abgezogen |
 | `requestId` | `X-Request-Id`; bei Rückfragen nennen |
+| `idempotentReplayed` | `Idempotent-Replayed`: `true`, wenn die Antwort aus einem früheren Aufruf mit demselben `Idempotency-Key` stammt |
 | `status`, `headers` | HTTP-Status und alle Kopfzeilen |
 
 ## Fehler
@@ -111,8 +139,14 @@ Alle Fehler erben von `FlexenError`. Antworten mit Fehlerstatus werfen eine Unte
 | 401 | invalid_key | `AuthenticationError` |
 | 402 | insufficient_credits | `InsufficientCreditsError` |
 | 402 | daily_limit_reached | `DailyLimitReachedError` |
+| 402 | monthly_budget_reached | `MonthlyBudgetReachedError` |
+| 402 | key_budget_reached | `KeyBudgetReachedError` |
 | 403 | account_suspended | `AccountSuspendedError` |
+| 403 | key_expired | `KeyExpiredError` |
+| 403 | key_scope_denied | `KeyScopeDeniedError` |
+| 403 | ip_not_allowed | `IpNotAllowedError` |
 | 404 | not_found | `NotFoundError` |
+| 409 | idempotency_in_progress | `IdempotencyInProgressError` |
 | 422 | invalid_request | `InvalidRequestError` |
 | 422 | tier_unavailable | `TierUnavailableError` |
 | 429 | rate_limited | `RateLimitError` |
@@ -127,7 +161,7 @@ Auf Seite des Clients: `InvalidInputError` (vor dem Senden abgelehnt), `APIConne
 - Wiederholt werden nur 429 und 503, höchstens dreimal (`maxRetries`), mit exponentieller Wartezeit und Zufallsanteil. `Retry-After` wird eingehalten; verlangt es mehr als `retry.maxRetryAfterMs` (60 s), kommt stattdessen der Fehler. Alles andere (übrige 4xx, 500, 504, Netzfehler) wird nie wiederholt. Laut Vertrag buchen 429 und 503 nichts ab.
 - `timeoutMs` (Standard 60 s) ist die Gesamtzeit eines Aufrufs samt Wartezeiten. Läuft sie ab, kommt `RequestTimeoutError`.
 - Mit `{ signal }` brichst du einen Aufruf ab und bekommst `UserAbortError`. Ein Aufruf, der vor der Antwort abgebrochen wird, kostet nichts.
-- `{ idempotencyKey }` geht als `Idempotency-Key` mit, bei jeder Wiederholung derselbe. Die API wertet ihn ab Plan 05 aus; bis dahin wird er ignoriert.
+- `{ idempotencyKey }` geht als `Idempotency-Key` mit, bei jeder Wiederholung derselbe. Die API hält die Antwort 24 Stunden: Dieselbe Anfrage mit demselben Schlüssel liefert dieselbe Antwort, bucht nichts ab und ist am Ergebnis als wiederholt markiert (`idempotentReplayed`). Läuft der erste Aufruf noch, kommt `409 idempotency_in_progress` (`IdempotencyInProgressError`, wird nicht automatisch wiederholt).
 
 ```ts
 const ac = new AbortController()

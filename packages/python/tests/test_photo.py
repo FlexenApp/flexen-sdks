@@ -83,7 +83,7 @@ async def test_async_photo(photo_fake: Fake, tmp_path: Path) -> None:
     p = tmp_path / "meal.jpg"
     p.write_bytes(JPEG)
     async with AsyncFlexen(TEST_KEY, base_url=photo_fake.url) as c:
-        res = await c.nutrition.photo(image_path=p, tier="economy")
+        res = await c.nutrition.photo(image_path=p, tier="light")
         with pytest.raises(InvalidInputError):
             await c.nutrition.photo(image_bytes=bytes(IMAGE_MAX_BYTES + 1))
     assert sent(photo_fake) == [B64]

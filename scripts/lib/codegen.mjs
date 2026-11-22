@@ -36,12 +36,16 @@ function inlineName(parent, prop, schema) {
   return null
 }
 
+/** Tiers of the operations that have them, by operationId. */
+const tiersTable = (snapshot) => Object.fromEntries(snapshot.operations.filter((o) => o.tiers).map((o) => [o.operationId, o.tiers]))
+
 // ---------------------------------------------------------------- TypeScript
 
 function tsType(schema, parent, prop) {
   if (schema.$ref) return refName(schema.$ref)
   if (schema.oneOf) return schema.oneOf.map((s) => tsType(s, parent, prop)).join(' | ')
   if (schema.enum) return schema.enum.map((v) => JSON.stringify(v)).join(' | ')
+  if (schema.const !== undefined) return JSON.stringify(schema.const)
   switch (schema.type) {
     case 'string':
       return 'string'
@@ -50,6 +54,8 @@ function tsType(schema, parent, prop) {
       return 'number'
     case 'boolean':
       return 'boolean'
+    case 'null':
+      return 'null'
     case 'array': {
       const inner = schema.items?.type === 'object' && schema.items.properties ? inlineName(parent, prop, schema) : tsType(schema.items ?? {}, parent, prop)
       return inner.includes(' | ') ? `Array<${inner}>` : `${inner}[]`
@@ -164,6 +170,9 @@ export function generateTs(snapshot) {
   L.push('')
   L.push(`export type TierId = ${snapshot.tierIds.map((t) => JSON.stringify(t)).join(' | ')}`)
   L.push(`export const DEFAULT_TIER = ${JSON.stringify(snapshot.defaultTier)} as const`)
+  L.push(`export const TIER_IDS = ${JSON.stringify(snapshot.tierIds)} as const`)
+  L.push("/** Tiers per AI operation. state 'later' = not available yet: with a live key the API answers 422 tier_unavailable (TierUnavailableError). */")
+  L.push(`export const TIERS = ${JSON.stringify(tiersTable(snapshot), null, 2)} as const`)
   L.push('')
   L.push('/** prompt_version values the contract names today. */')
   L.push(`export const PROMPT_VERSION = ${JSON.stringify(snapshot.promptVersion, null, 2)} as const`)
@@ -177,6 +186,7 @@ function pyType(schema, parent, prop) {
   if (schema.$ref) return refName(schema.$ref)
   if (schema.oneOf) return schema.oneOf.map((s) => pyType(s, parent, prop)).join(' | ')
   if (schema.enum) return `Literal[${schema.enum.map((v) => JSON.stringify(v)).join(', ')}]`
+  if (schema.const !== undefined) return `Literal[${pyLiteral(schema.const)}]`
   switch (schema.type) {
     case 'string':
       return 'str'
@@ -186,6 +196,8 @@ function pyType(schema, parent, prop) {
       return 'float'
     case 'boolean':
       return 'bool'
+    case 'null':
+      return 'None'
     case 'array': {
       const inner = schema.items?.type === 'object' && schema.items.properties ? inlineName(parent, prop, schema) : pyType(schema.items ?? {}, parent, prop)
       return `list[${inner}]`
@@ -245,7 +257,7 @@ export function generatePython(snapshot) {
       const args = [req.has(k) ? '...' : 'None']
       if (f !== k) args.push(`alias=${pyStr(k)}`)
       if (ps.description) args.push(`description=${pyStr(ps.description)}`)
-      L.push(`    ${f}: ${req.has(k) ? ty : `${ty} | None`} = Field(${args.join(', ')})`)
+      L.push(`    ${f}: ${req.has(k) || / \| None$/.test(ty) ? ty : `${ty} | None`} = Field(${args.join(', ')})`)
     }
     if (Object.keys(s.properties ?? {}).length === 0) L.push('    pass')
     L.push('')
@@ -287,6 +299,9 @@ export function generatePython(snapshot) {
   L.push('')
   L.push(`TierId = Literal[${snapshot.tierIds.map((t) => JSON.stringify(t)).join(', ')}]`)
   L.push(`DEFAULT_TIER = ${JSON.stringify(snapshot.defaultTier)}`)
+  L.push(`TIER_IDS: tuple[str, ...] = (${snapshot.tierIds.map((t) => JSON.stringify(t)).join(', ')},)`)
+  L.push("#: Tiers per AI operation. state 'later' = not available yet: with a live key the API answers 422 tier_unavailable (TierUnavailableError).")
+  L.push(`TIERS: dict[str, list[dict[str, Any]]] = ${pyLiteral(tiersTable(snapshot))}`)
   L.push('')
   L.push(`PROMPT_VERSION: dict[str, str] = ${pyLiteral(snapshot.promptVersion)}`)
   L.push('')

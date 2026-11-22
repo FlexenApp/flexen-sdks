@@ -39,7 +39,10 @@ type R<T> = Promise<FlexenResponse<T>>
 class Nutrition {
   constructor(private readonly t: Transport) {}
 
-  /** POST /v1/nutrition/text: free text to amount, calories and macros. */
+  /**
+   * POST /v1/nutrition/text: free text to amount, calories and macros.
+   * tier: 'light' is the default. 'max' is not available yet: a live key gets TierUnavailableError (422 tier_unavailable).
+   */
   text(body: NutritionTextRequest, options?: RequestOptions): R<NutritionTextResponse> {
     return this.t.call('nutritionText', { body, options })
   }
@@ -56,7 +59,7 @@ class Nutrition {
     return this.t.call('nutritionPhoto', { body, options })
   }
 
-  /** POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs. Price still open in the contract. */
+  /** POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs, 0 credits. */
   correct(body: NutritionCorrectRequest, options?: RequestOptions): R<NutritionCorrectResponse> {
     return this.t.call('nutritionCorrect', { body, options })
   }
@@ -65,7 +68,7 @@ class Nutrition {
 class Foods {
   constructor(private readonly t: Transport) {}
 
-  /** GET /v1/foods/search: your catalog first, then open sources. */
+  /** GET /v1/foods/search: your catalog first, then open sources. sources and exclude_sources are sent comma-separated. */
   search(params: FoodsSearchParams, options?: RequestOptions): R<FoodSearchResponse> {
     return this.t.call('foodsSearch', { params: { ...params }, options })
   }
@@ -87,7 +90,7 @@ class Goals {
 
 interface PageOf<T> {
   items: T[]
-  next_cursor?: string
+  next_cursor?: string | null
 }
 
 class CatalogEntries<Entry, List extends PageOf<Entry>, Upload, ListParams extends { q?: string; cursor?: string }> {
@@ -112,7 +115,7 @@ class CatalogEntries<Entry, List extends PageOf<Entry>, Upload, ListParams exten
     do {
       const page = await this.list({ ...params, ...(cursor !== undefined ? { cursor } : {}) } as ListParams, options)
       for (const item of page.data.items) yield item
-      cursor = page.data.next_cursor
+      cursor = page.data.next_cursor ?? undefined
     } while (cursor !== undefined && cursor !== '')
   }
 

@@ -1,11 +1,11 @@
 {
   "source": {
-    "repo": "web-relaunch-2",
+    "repo": "web-qa-fix",
     "files": [
       "src/content/developers/api.ts",
       "src/content/developers/openapi.ts"
     ],
-    "commit": "2892864f87dc115ca6e1fd4ae0ede5063a5924c7",
+    "commit": "2b020406dc969dcec6bbe333c02e96a52c2ed4ed",
     "dirty": false
   },
   "info": {
@@ -18,7 +18,7 @@
       "id": "account-balance",
       "method": "GET",
       "path": "/v1/account/balance",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "account",
       "summary": "Get the current balance in credits. Credits reserved for calls that are still running are not yet deducted from it.",
@@ -40,7 +40,7 @@
       "id": "account-usage",
       "method": "GET",
       "path": "/v1/account/usage",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "account",
       "summary": "Get usage per day and endpoint for a period of at most 92 days: calls and credits deducted.",
@@ -83,7 +83,7 @@
       "id": "catalog-delete",
       "method": "DELETE",
       "path": "/v1/catalog",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Delete the whole catalog, foods and recipes.",
@@ -105,7 +105,7 @@
       "id": "catalog-export",
       "method": "GET",
       "path": "/v1/catalog/export",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Export the whole catalog as JSON.",
@@ -127,7 +127,7 @@
       "id": "catalog-foods-list",
       "method": "GET",
       "path": "/v1/catalog/foods",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "List and search the foods in your catalog.",
@@ -169,17 +169,31 @@
       "id": "catalog-foods-put",
       "method": "POST",
       "path": "/v1/catalog/foods",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Create or replace foods, one or several at once. The same id replaces the entry.",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "CatalogFoodsRequest",
       "responseSchema": "CatalogSaveResponse",
       "errorStatuses": [
         "400",
         "401",
         "403",
+        "409",
         "422",
         "429",
         "500",
@@ -191,7 +205,7 @@
       "id": "catalog-foods-get",
       "method": "GET",
       "path": "/v1/catalog/foods/{id}",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Get one food.",
@@ -224,7 +238,7 @@
       "id": "catalog-foods-delete",
       "method": "DELETE",
       "path": "/v1/catalog/foods/{id}",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Delete one food.",
@@ -257,7 +271,7 @@
       "id": "catalog-recipes-list",
       "method": "GET",
       "path": "/v1/catalog/recipes",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "List and search the recipes in your catalog.",
@@ -299,17 +313,31 @@
       "id": "catalog-recipes-put",
       "method": "POST",
       "path": "/v1/catalog/recipes",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Create or replace recipes, one or several at once.",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "CatalogRecipesRequest",
       "responseSchema": "CatalogSaveResponse",
       "errorStatuses": [
         "400",
         "401",
         "403",
+        "409",
         "422",
         "429",
         "500",
@@ -321,7 +349,7 @@
       "id": "catalog-recipes-get",
       "method": "GET",
       "path": "/v1/catalog/recipes/{id}",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Get one recipe.",
@@ -354,7 +382,7 @@
       "id": "catalog-recipes-delete",
       "method": "DELETE",
       "path": "/v1/catalog/recipes/{id}",
-      "state": "planned",
+      "state": "live",
       "credits": 0,
       "tag": "catalog",
       "summary": "Delete one recipe.",
@@ -387,7 +415,7 @@
       "id": "foods-barcode",
       "method": "GET",
       "path": "/v1/foods/barcode/{code}",
-      "state": "planned",
+      "state": "live",
       "credits": 1,
       "tag": "foods",
       "summary": "Product by barcode",
@@ -406,13 +434,113 @@
           "name": "lang",
           "in": "query",
           "required": false,
-          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
+          "description": "Language of the texts the API writes itself, for example message in errors. Messages exist in de and en; any other language gets en. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
           "schema": {
             "type": "string",
             "enum": [
               "de",
-              "en"
+              "en",
+              "fr",
+              "es",
+              "it",
+              "nl",
+              "pl",
+              "pt",
+              "sv",
+              "da",
+              "nb",
+              "fi"
             ]
+          }
+        },
+        {
+          "name": "energy_unit",
+          "in": "query",
+          "required": false,
+          "description": "kcal (default) or kj. With kj, every kcal gets a kj field next to it, calculated from per_100g; kcal stays. For search and barcode, kj is in per_100g.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "kcal",
+              "kj"
+            ],
+            "default": "kcal"
+          }
+        },
+        {
+          "name": "nutrients",
+          "in": "query",
+          "required": false,
+          "description": "macros (default), eu7 or full. eu7 adds saturated fat, sugars and salt; for an estimate by the model an extra call estimates them, marked derived: \"model_extra\" and not measured. full exists only from data; what the source does not list is null.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "macros",
+              "eu7",
+              "full"
+            ],
+            "default": "macros"
+          }
+        },
+        {
+          "name": "provenance",
+          "in": "query",
+          "required": false,
+          "description": "item (default): source per item. field: in addition the provenance object with source, date of the source and kind of derivation per numeric field.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "item",
+              "field"
+            ],
+            "default": "item"
+          }
+        },
+        {
+          "name": "sources",
+          "in": "query",
+          "required": false,
+          "description": "Sources in order of priority, 1 to 5 entries without duplicates. If a match from your data provides the values, the reason is own_data, for a database (USDA FoodData Central, Open Food Facts, BLS, CIQUAL, Fineli, Livsmedelsverket) database. The default lists have more entries than you can name yourself. As a query parameter, a comma-separated list.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "customer_catalog",
+                "open_food_facts"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "uniqueItems": true
+          }
+        },
+        {
+          "name": "exclude_sources",
+          "in": "query",
+          "required": false,
+          "description": "Sources that are not used, without duplicates. Subtracted from sources. As a query parameter, a comma-separated list.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "customer_catalog",
+                "open_food_facts"
+              ]
+            },
+            "maxItems": 2,
+            "uniqueItems": true
+          }
+        },
+        {
+          "name": "profile",
+          "in": "query",
+          "required": false,
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
           }
         }
       ],
@@ -435,7 +563,7 @@
       "id": "foods-search",
       "method": "GET",
       "path": "/v1/foods/search",
-      "state": "planned",
+      "state": "live",
       "credits": 1,
       "tag": "foods",
       "summary": "Food search",
@@ -455,13 +583,123 @@
           "name": "lang",
           "in": "query",
           "required": false,
-          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
+          "description": "Language of the texts the API writes itself, for example message in errors. Messages exist in de and en; any other language gets en. Without it, en. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated.",
           "schema": {
             "type": "string",
             "enum": [
               "de",
-              "en"
+              "en",
+              "fr",
+              "es",
+              "it",
+              "nl",
+              "pl",
+              "pt",
+              "sv",
+              "da",
+              "nb",
+              "fi"
             ]
+          }
+        },
+        {
+          "name": "energy_unit",
+          "in": "query",
+          "required": false,
+          "description": "kcal (default) or kj. With kj, every kcal gets a kj field next to it, calculated from per_100g; kcal stays. For search and barcode, kj is in per_100g.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "kcal",
+              "kj"
+            ],
+            "default": "kcal"
+          }
+        },
+        {
+          "name": "nutrients",
+          "in": "query",
+          "required": false,
+          "description": "macros (default), eu7 or full. eu7 adds saturated fat, sugars and salt; for an estimate by the model an extra call estimates them, marked derived: \"model_extra\" and not measured. full exists only from data; what the source does not list is null.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "macros",
+              "eu7",
+              "full"
+            ],
+            "default": "macros"
+          }
+        },
+        {
+          "name": "provenance",
+          "in": "query",
+          "required": false,
+          "description": "item (default): source per item. field: in addition the provenance object with source, date of the source and kind of derivation per numeric field.",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "item",
+              "field"
+            ],
+            "default": "item"
+          }
+        },
+        {
+          "name": "sources",
+          "in": "query",
+          "required": false,
+          "description": "Sources in order of priority, 1 to 5 entries without duplicates. If a match from your data provides the values, the reason is own_data, for a database (USDA FoodData Central, Open Food Facts, BLS, CIQUAL, Fineli, Livsmedelsverket) database. The default lists have more entries than you can name yourself. As a query parameter, a comma-separated list.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "customer_catalog",
+                "bls",
+                "ciqual",
+                "fineli",
+                "livsmedelsverket",
+                "usda_fdc",
+                "open_food_facts"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "uniqueItems": true
+          }
+        },
+        {
+          "name": "exclude_sources",
+          "in": "query",
+          "required": false,
+          "description": "Sources that are not used, without duplicates. Subtracted from sources. As a query parameter, a comma-separated list.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "customer_catalog",
+                "bls",
+                "ciqual",
+                "fineli",
+                "livsmedelsverket",
+                "usda_fdc",
+                "open_food_facts"
+              ]
+            },
+            "maxItems": 7,
+            "uniqueItems": true
+          }
+        },
+        {
+          "name": "profile",
+          "in": "query",
+          "required": false,
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
           }
         }
       ],
@@ -483,11 +721,24 @@
       "id": "goals-calculate",
       "method": "POST",
       "path": "/v1/goals/calculate",
-      "state": "planned",
+      "state": "live",
       "credits": 1,
       "tag": "goals",
       "summary": "Goal calculator",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "GoalsRequest",
       "responseSchema": "GoalsResponse",
       "errorStatuses": [
@@ -495,6 +746,7 @@
         "401",
         "402",
         "403",
+        "409",
         "422",
         "429",
         "500",
@@ -507,10 +759,23 @@
       "method": "POST",
       "path": "/v1/nutrition/correct",
       "state": "planned",
-      "credits": null,
+      "credits": 0,
       "tag": "nutrition",
       "summary": "Correction",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "NutritionCorrectRequest",
       "responseSchema": "NutritionCorrectResponse",
       "errorStatuses": [
@@ -518,6 +783,7 @@
         "401",
         "402",
         "403",
+        "409",
         "422",
         "429",
         "500",
@@ -529,11 +795,24 @@
       "id": "nutrition-photo",
       "method": "POST",
       "path": "/v1/nutrition/photo",
-      "state": "beta-planned",
+      "state": "beta",
       "credits": 2,
       "tag": "nutrition",
       "summary": "Photo to nutrition",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "NutritionPhotoRequest",
       "responseSchema": "NutritionPhotoResponse",
       "errorStatuses": [
@@ -541,6 +820,7 @@
         "401",
         "402",
         "403",
+        "409",
         "422",
         "429",
         "500",
@@ -549,7 +829,7 @@
       ],
       "tiers": [
         {
-          "id": "economy",
+          "id": "light",
           "state": "launch",
           "modelId": "glm-5.3-flash",
           "credits": 2
@@ -567,11 +847,24 @@
       "id": "nutrition-text",
       "method": "POST",
       "path": "/v1/nutrition/text",
-      "state": "planned",
+      "state": "live",
       "credits": 1,
       "tag": "nutrition",
       "summary": "Text to nutrition",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Idempotency-Key",
+          "in": "header",
+          "required": false,
+          "description": "Optional, 1 to 255 printable ASCII characters without spaces, for example a UUID. Makes a POST repeatable for 24 hours without a second deduction. Ignored for GET and DELETE.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[\\x21-\\x7E]{1,255}$",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      ],
       "requestSchema": "NutritionTextRequest",
       "responseSchema": "NutritionTextResponse",
       "errorStatuses": [
@@ -579,6 +872,8 @@
         "401",
         "402",
         "403",
+        "404",
+        "409",
         "422",
         "429",
         "500",
@@ -587,7 +882,7 @@
       ],
       "tiers": [
         {
-          "id": "economy",
+          "id": "light",
           "state": "launch",
           "modelId": "glm-5.3-flash",
           "credits": 1
@@ -659,6 +954,592 @@
         }
       }
     },
+    "Per100gExtended": {
+      "type": "object",
+      "required": [
+        "kcal",
+        "protein_g",
+        "carbs_g",
+        "fat_g"
+      ],
+      "additionalProperties": false,
+      "description": "Values per 100 g (per 100 ml where the source lists them so): the four base values, with energy_unit kj also kj, with nutrients eu7 or full also the extra nutrients of the chosen scope.",
+      "properties": {
+        "kcal": {
+          "type": "number",
+          "description": "Energy in kcal.",
+          "minimum": 0
+        },
+        "protein_g": {
+          "type": "number",
+          "description": "Protein in grams.",
+          "minimum": 0
+        },
+        "carbs_g": {
+          "type": "number",
+          "description": "Carbohydrates in grams.",
+          "minimum": 0
+        },
+        "fat_g": {
+          "type": "number",
+          "description": "Fat in grams.",
+          "minimum": 0
+        },
+        "kj": {
+          "type": "number",
+          "description": "Energy in kJ: kcal times 4.184, to one decimal. Only with energy_unit kj.",
+          "minimum": 0
+        },
+        "saturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Saturated fat in grams per 100 g; null: no data."
+        },
+        "sugars_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Sugars in grams per 100 g; null: no data."
+        },
+        "salt_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Salt in grams per 100 g; null: no data."
+        },
+        "fiber_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Fibre in grams per 100 g; null: no data."
+        },
+        "trans_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Trans fat in grams per 100 g; null: no data."
+        },
+        "monounsaturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Monounsaturated fat in grams per 100 g; null: no data."
+        },
+        "polyunsaturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Polyunsaturated fat in grams per 100 g; null: no data."
+        },
+        "cholesterol_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Cholesterol in milligrams per 100 g; null: no data."
+        },
+        "sodium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Sodium in milligrams per 100 g; null: no data."
+        },
+        "potassium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Potassium in milligrams per 100 g; null: no data."
+        },
+        "calcium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Calcium in milligrams per 100 g; null: no data."
+        },
+        "iron_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Iron in milligrams per 100 g; null: no data."
+        },
+        "magnesium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Magnesium in milligrams per 100 g; null: no data."
+        },
+        "zinc_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Zinc in milligrams per 100 g; null: no data."
+        },
+        "vitamin_a_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin A in micrograms (RAE) per 100 g; null: no data."
+        },
+        "vitamin_c_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin C in milligrams per 100 g; null: no data."
+        },
+        "vitamin_d_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin D in micrograms per 100 g; null: no data."
+        },
+        "vitamin_b12_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin B12 in micrograms per 100 g; null: no data."
+        },
+        "folate_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Folate in micrograms per 100 g; null: no data."
+        }
+      }
+    },
+    "Nutrients": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Extra nutrients beyond the four base values. eu7 adds saturated_fat_g, sugars_g, salt_g; full adds all keys listed here. Grams to one decimal, milligrams and micrograms as whole numbers. null: the source has no value. salt_g comes from the source, otherwise from sodium (mg times 2.5 divided by 1000).",
+      "properties": {
+        "saturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Saturated fat in grams; null: no data."
+        },
+        "sugars_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Sugars in grams; null: no data."
+        },
+        "salt_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Salt in grams; null: no data."
+        },
+        "fiber_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Fibre in grams; null: no data."
+        },
+        "trans_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Trans fat in grams; null: no data."
+        },
+        "monounsaturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Monounsaturated fat in grams; null: no data."
+        },
+        "polyunsaturated_fat_g": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Polyunsaturated fat in grams; null: no data."
+        },
+        "cholesterol_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Cholesterol in milligrams; null: no data."
+        },
+        "sodium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Sodium in milligrams; null: no data."
+        },
+        "potassium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Potassium in milligrams; null: no data."
+        },
+        "calcium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Calcium in milligrams; null: no data."
+        },
+        "iron_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Iron in milligrams; null: no data."
+        },
+        "magnesium_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Magnesium in milligrams; null: no data."
+        },
+        "zinc_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Zinc in milligrams; null: no data."
+        },
+        "vitamin_a_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin A in micrograms (RAE); null: no data."
+        },
+        "vitamin_c_mg": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin C in milligrams; null: no data."
+        },
+        "vitamin_d_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin D in micrograms; null: no data."
+        },
+        "vitamin_b12_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vitamin B12 in micrograms; null: no data."
+        },
+        "folate_ug": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Folate in micrograms; null: no data."
+        }
+      }
+    },
+    "ProvenanceEntry": {
+      "type": "object",
+      "required": [
+        "source",
+        "as_of",
+        "derived"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "as_of": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Date of the source for this value: publication date at USDA FoodData Central, last change at Open Food Facts, last update in your catalog. null for the model and for data in the request; for the model, chain_version names the version."
+        },
+        "derived": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "kcal_to_kj",
+                "sodium_to_salt",
+                "scaled_known_grams",
+                "model_extra",
+                "energy_from_kj",
+                "energy_eu_factors",
+                "carbs_available_from_difference",
+                "trace_as_zero",
+                "below_limit"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "How the value was derived from the value of the source; null: unchanged. kcal_to_kj: converted from kcal. sodium_to_salt: salt calculated from sodium. scaled_known_grams: recalculated for known_grams. model_extra: estimated by the model in an extra call, not measured. energy_from_kj: kcal from kJ (kJ / 4.184). energy_eu_factors: kcal from the macronutrients with the factors of Regulation (EU) 1169/2011 Annex XIV. carbs_available_from_difference: available carbohydrates = carbohydrate by difference minus fibre. trace_as_zero: the source lists traces, shown as 0. below_limit: the source lists a value below the detection limit, shown as 0."
+        },
+        "record": {
+          "type": "string",
+          "description": "Only for hosted sources: record identifier in the source, for example M110100 in BLS."
+        },
+        "dataset": {
+          "type": "string",
+          "description": "Only for hosted sources: name of the dataset, for example \"BLS 4.0\"."
+        }
+      }
+    },
+    "Provenance": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/ProvenanceEntry"
+      },
+      "description": "Map from the name of a numeric field to its provenance."
+    },
+    "UnmeasuredReason": {
+      "type": "string",
+      "enum": [
+        "hint",
+        "instructions",
+        "context",
+        "known_grams",
+        "own_data",
+        "database"
+      ],
+      "description": "Reason why a response is not measured: hint, instructions or context went into the prompt; the values were recalculated for known_grams; a match from your own data (own_data) or from a database (database) replaced the values, or the call ran without the model."
+    },
+    "GuardrailEvent": {
+      "type": "string",
+      "enum": [
+        "hint_ignored",
+        "venue_ignored",
+        "name_replaced",
+        "emergency_language",
+        "eating_disorder_language"
+      ],
+      "description": "What a fixed guardrail did or noticed. The guardrails cannot be switched off by a request or a profile."
+    },
     "Per100gInput": {
       "type": "object",
       "required": [
@@ -668,7 +1549,7 @@
         "fat_g"
       ],
       "additionalProperties": false,
-      "description": "Values per 100 g in your own data (custom_foods and catalog), with upper limits. The sum of protein_g, carbs_g and fat_g is at most 102.",
+      "description": "Values per 100 g in your own data (custom_foods and catalog), with upper limits. The sum of protein_g, carbs_g and fat_g is at most 102. The extra nutrients are optional: grams 0 to 100, milligrams and micrograms 0 to 100000, saturated_fat_g at most fat_g, sugars_g at most carbs_g.",
       "properties": {
         "kcal": {
           "type": "number",
@@ -693,6 +1574,120 @@
           "description": "Fat in grams. protein_g, carbs_g and fat_g together at most 102.",
           "minimum": 0,
           "maximum": 100
+        },
+        "saturated_fat_g": {
+          "type": "number",
+          "description": "Optional. Saturated fat in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "sugars_g": {
+          "type": "number",
+          "description": "Optional. Sugars in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "salt_g": {
+          "type": "number",
+          "description": "Optional. Salt in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fiber_g": {
+          "type": "number",
+          "description": "Optional. Fibre in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "trans_fat_g": {
+          "type": "number",
+          "description": "Optional. Trans fat in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "monounsaturated_fat_g": {
+          "type": "number",
+          "description": "Optional. Monounsaturated fat in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "polyunsaturated_fat_g": {
+          "type": "number",
+          "description": "Optional. Polyunsaturated fat in grams per 100 g.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "cholesterol_mg": {
+          "type": "number",
+          "description": "Optional. Cholesterol in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "sodium_mg": {
+          "type": "number",
+          "description": "Optional. Sodium in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "potassium_mg": {
+          "type": "number",
+          "description": "Optional. Potassium in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "calcium_mg": {
+          "type": "number",
+          "description": "Optional. Calcium in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "iron_mg": {
+          "type": "number",
+          "description": "Optional. Iron in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "magnesium_mg": {
+          "type": "number",
+          "description": "Optional. Magnesium in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "zinc_mg": {
+          "type": "number",
+          "description": "Optional. Zinc in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "vitamin_a_ug": {
+          "type": "number",
+          "description": "Optional. Vitamin A in micrograms (RAE) per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "vitamin_c_mg": {
+          "type": "number",
+          "description": "Optional. Vitamin C in milligrams per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "vitamin_d_ug": {
+          "type": "number",
+          "description": "Optional. Vitamin D in micrograms per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "vitamin_b12_ug": {
+          "type": "number",
+          "description": "Optional. Vitamin B12 in micrograms per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "folate_ug": {
+          "type": "number",
+          "description": "Optional. Folate in micrograms per 100 g.",
+          "minimum": 0,
+          "maximum": 100000
         }
       }
     },
@@ -703,7 +1698,11 @@
         "customer_catalog",
         "usda_fdc",
         "open_food_facts",
-        "model"
+        "model",
+        "bls",
+        "ciqual",
+        "fineli",
+        "livsmedelsverket"
       ],
       "description": "Where the values come from."
     },
@@ -733,6 +1732,15 @@
           "type": "string",
           "description": "Optional. Barcode of the product: 8, 12, 13 or 14 digits.",
           "pattern": "^(\\d{8}|\\d{12}|\\d{13}|\\d{14})$"
+        },
+        "per": {
+          "type": "string",
+          "enum": [
+            "100g",
+            "100ml"
+          ],
+          "default": "100g",
+          "description": "Optional. Whether per_100g holds values per 100 g or per 100 ml. With 100ml, grams of the entry is read as millilitres, and with volume_unit ml the response carries the amount in ml."
         }
       }
     },
@@ -752,22 +1760,154 @@
           "type": "string",
           "enum": [
             "de",
-            "en"
+            "en",
+            "fr",
+            "es",
+            "it",
+            "nl",
+            "pl",
+            "pt",
+            "sv",
+            "da",
+            "nb",
+            "fi"
           ],
-          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. The language of name and dish is chosen by the model; it is neither fixed nor measured."
+          "description": "Language of the texts the API writes. For text and photo also the language of name and dish: if the name from the chain is not already in that language, it is translated in an extra call; the values stay untouched. Whether the name already fits is detected from its words, not measured. Names from your data and from databases are never translated. Messages exist in German and English, for any other language in English. Without it: messages in English, name as the model returns it."
         },
-        "tier": {
+        "energy_unit": {
           "type": "string",
           "enum": [
-            "economy",
-            "max"
+            "kcal",
+            "kj"
           ],
-          "default": "economy",
-          "description": "Tier of the call. Default economy. max is not available yet and is answered with 422 tier_unavailable; so is a tier that is not yet enabled for live keys."
+          "default": "kcal",
+          "description": "kcal (default) or kj. With kj, every kcal gets a kj field next to it, calculated from per_100g; kcal stays. For search and barcode, kj is in per_100g."
+        },
+        "mass_unit": {
+          "type": "string",
+          "enum": [
+            "g",
+            "oz"
+          ],
+          "default": "g",
+          "description": "g (default) or oz. With oz, every grams gets an oz field next to it, and quantity is given in ounces; grams stays."
+        },
+        "volume_unit": {
+          "type": "string",
+          "enum": [
+            "ml"
+          ],
+          "description": "ml. Every item then carries an ml field: the amount in millilitres if the source lists its values per 100 ml, otherwise null. The API assumes no density."
+        },
+        "nutrients": {
+          "type": "string",
+          "enum": [
+            "macros",
+            "eu7",
+            "full"
+          ],
+          "default": "macros",
+          "description": "macros (default), eu7 or full. eu7 adds saturated fat, sugars and salt; for an estimate by the model an extra call estimates them, marked derived: \"model_extra\" and not measured. full exists only from data; what the source does not list is null."
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "item",
+            "field"
+          ],
+          "default": "item",
+          "description": "item (default): source per item. field: in addition the provenance object with source, date of the source and kind of derivation per numeric field."
+        },
+        "hint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "Hint about the food, the portion or the preparation, at most 300 characters. Goes into the prompt; the response is then not measured."
+        },
+        "known_grams": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 5000,
+          "description": "Known weight in grams, above 0 and at most 5000. The values are recalculated for this weight after the chain; low, value and high are then equal and confidence is 1."
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country as ISO 3166-1 alpha-2 in capitals, for example DE. Goes into the prompt as context."
+        },
+        "meal": {
+          "type": "string",
+          "enum": [
+            "breakfast",
+            "lunch",
+            "dinner",
+            "snack"
+          ],
+          "description": "Meal: breakfast, lunch, dinner or snack. Goes into the prompt as context."
+        },
+        "venue": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Where the food is eaten, in words, for example canteen or restaurant, at most 100 characters. Goes into the prompt as context."
+        },
+        "review_threshold": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.99,
+          "description": "Number from 0.01 to 0.99 with at most two decimals. needs_review is then set because of the range when 1 − confidence is above the threshold; the other reasons for needs_review stay. Without it, the measured rule applies. How often needs_review is set with your own threshold is not measured."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "customer_inline",
+              "customer_catalog",
+              "bls",
+              "ciqual",
+              "fineli",
+              "livsmedelsverket",
+              "usda_fdc",
+              "open_food_facts",
+              "model"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "description": "Sources in order of priority, 1 to 5 entries without duplicates. If a match from your data provides the values, the reason is own_data, for a database (USDA FoodData Central, Open Food Facts, BLS, CIQUAL, Fineli, Livsmedelsverket) database. The default lists have more entries than you can name yourself."
+        },
+        "exclude_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "customer_inline",
+              "customer_catalog",
+              "bls",
+              "ciqual",
+              "fineli",
+              "livsmedelsverket",
+              "usda_fdc",
+              "open_food_facts",
+              "model"
+            ]
+          },
+          "maxItems": 9,
+          "uniqueItems": true,
+          "description": "Sources that are not used, without duplicates. Subtracted from sources."
         },
         "model": {
-          "type": "string",
-          "description": "Optional. Pins the call to one model of the chosen tier, so a later model change does not affect it. Today each tier has exactly one model."
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": false
+            }
+          ],
+          "description": "Optional. Pins the call to one model of the chosen tier, so a later model change does not affect it. Today each tier has exactly one model. false works without the model, from the sources only; then model must not be in sources, and the call needs an amount (known_grams or grams of the matching custom_foods entry)."
         },
         "custom_foods": {
           "type": "array",
@@ -776,6 +1916,34 @@
           },
           "maxItems": 200,
           "description": "Optional. Your own foods for this call only, for example house recipes, a menu or the range of a shop. For text and photo: if the name of the recognised dish matches one of your entries, its values per 100 g apply. Single components are not matched. How often this matching hits is not measured. Items based on them carry source customer_inline. Nothing of it is stored."
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "Your own instructions to the model, at most 1,000 characters, for example on naming or the kind of cuisine. Goes into the prompt; the response is then not measured. It cannot change the fixed guardrails."
+        },
+        "chain_version": {
+          "type": "string",
+          "enum": [
+            "2.3"
+          ],
+          "default": "2.3",
+          "description": "Pins the call to one version of the chain. Without it, the current one applies."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "light",
+            "max"
+          ],
+          "default": "light",
+          "description": "Tier of the call. Default light. max is not available yet: with a live key it is answered with 422 tier_unavailable, and so is a tier that is not yet enabled for live keys. With a test key, max returns the same fixed example response as light."
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped."
         }
       }
     },
@@ -826,6 +1994,18 @@
         "fat_g": {
           "type": "number",
           "description": "Sum of fat in grams."
+        },
+        "kj": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Sum of the items in kJ, only with energy_unit kj; each end is the sum of the rounded items."
+        },
+        "oz": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Sum of the amounts in ounces, only with mass_unit oz; calculated from the sum of the grams, not from the rounded ounces."
+        },
+        "nutrients": {
+          "$ref": "#/components/schemas/Nutrients",
+          "description": "Sums of the extra nutrients, only with nutrients eu7 or full; null if an item has no value."
         }
       }
     },
@@ -866,8 +2046,31 @@
           "type": "number",
           "description": "Fat in grams, calculated from per_100g and grams.value."
         },
+        "kj": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kJ as a range, only with energy_unit kj. kj is calculated per bound from per_100g.kcal (times 4.184), not from the already rounded kcal; it can therefore differ by up to 3 from kcal times 4.184. per_100g.kj has one decimal. oz is grams divided by 28.349523125, to one decimal; total.oz comes from the sum of the grams. kcal and grams always stay in the response, the other units are added."
+        },
+        "oz": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Amount in ounces as a range, only with mass_unit oz: grams divided by 28.349523125, to one decimal."
+        },
+        "ml": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Amount in millilitres, only with volume_unit ml: a range if the source lists its values per 100 ml, otherwise null. Estimates by the model are always null here."
+        },
+        "nutrients": {
+          "$ref": "#/components/schemas/Nutrients",
+          "description": "Extra nutrients for grams.value, only with nutrients eu7 or full: the keys of the chosen scope. null: no data."
+        },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
+          "$ref": "#/components/schemas/Per100gExtended",
           "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
         }
       }
@@ -900,7 +2103,7 @@
         },
         "quantity": {
           "type": "string",
-          "description": "Amount as text, today always grams.value with the unit g, for example \"300 g\". The measured chain returns no amount in words such as \"2 slices\"."
+          "description": "Amount as text: grams.value with the unit g, for example \"300 g\"; with mass_unit oz, oz.value with the unit oz. The measured chain returns no amount in words such as \"2 slices\"."
         },
         "grams": {
           "$ref": "#/components/schemas/Range",
@@ -922,8 +2125,35 @@
           "type": "number",
           "description": "Fat in grams, calculated from per_100g and grams.value."
         },
+        "kj": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kJ as a range, only with energy_unit kj. kj is calculated per bound from per_100g.kcal (times 4.184), not from the already rounded kcal; it can therefore differ by up to 3 from kcal times 4.184. per_100g.kj has one decimal. oz is grams divided by 28.349523125, to one decimal; total.oz comes from the sum of the grams. kcal and grams always stay in the response, the other units are added."
+        },
+        "oz": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Amount in ounces as a range, only with mass_unit oz: grams divided by 28.349523125, to one decimal."
+        },
+        "ml": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Amount in millilitres, only with volume_unit ml: a range if the source lists its values per 100 ml, otherwise null. Estimates by the model are always null here."
+        },
+        "nutrients": {
+          "$ref": "#/components/schemas/Nutrients",
+          "description": "Extra nutrients for grams.value, only with nutrients eu7 or full: the keys of the chosen scope. null: no data."
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/Provenance",
+          "description": "Only with provenance field: per numeric field of the item (grams, kcal, kj, oz, ml, macros, extra nutrients with a value) its source, the date of the source and the kind of derivation."
+        },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
+          "$ref": "#/components/schemas/Per100gExtended",
           "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
         },
         "components": {
@@ -951,6 +2181,28 @@
         "needs_review": {
           "type": "boolean",
           "description": "true: a person should check this item before you use it. false is no confirmation that the value is right."
+        },
+        "food_id": {
+          "type": "string",
+          "description": "Only for hosted sources: stable identifier, eu:<group> or <source>:<record>."
+        },
+        "also_in": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AlsoIn"
+          },
+          "description": "Only for hosted sources: further members of the group."
+        },
+        "attributions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Attribution"
+          },
+          "description": "Only for hosted sources and Open Food Facts: attribution per source that supplied a value, source of the base values first."
+        },
+        "data_version": {
+          "type": "string",
+          "description": "Only for hosted sources: version of the data snapshot, for example eu-2026-12-01."
         }
       }
     },
@@ -961,7 +2213,11 @@
         "total",
         "tier",
         "model",
-        "prompt_version"
+        "prompt_version",
+        "measured",
+        "unmeasured_because",
+        "chain_version",
+        "name_lang"
       ],
       "properties": {
         "items": {
@@ -977,18 +2233,87 @@
         "tier": {
           "type": "string",
           "enum": [
-            "economy",
+            "light",
             "max"
           ],
           "description": "Tier that answered the call."
         },
         "model": {
-          "type": "string",
-          "description": "Model that answered the call."
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Model that answered the call; null if the call ran without the model (model: false)."
         },
         "prompt_version": {
           "type": "string",
           "description": "Version of chain and prompt that answered the call, today \"kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)\"."
+        },
+        "measured": {
+          "type": "boolean",
+          "description": "measured is true when grams, kcal, protein_g, carbs_g and fat_g come from the measured chain in its measured version and nothing has changed them. Our public accuracy figures apply only to responses with measured: true; otherwise unmeasured_because states the reasons."
+        },
+        "unmeasured_because": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UnmeasuredReason"
+          },
+          "uniqueItems": true,
+          "description": "Why the response is not measured; empty if measured is true. Order as in the list of reasons."
+        },
+        "chain_version": {
+          "type": "string",
+          "enum": [
+            "2.3"
+          ],
+          "description": "Version of the chain of this endpoint, today \"2.3\". With model: false no model ran; the field then names the current version of the endpoint."
+        },
+        "name_lang": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "de",
+                "en",
+                "fr",
+                "es",
+                "it",
+                "nl",
+                "pl",
+                "pt",
+                "sv",
+                "da",
+                "nb",
+                "fi"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Language of the name if known: the translated name (lang), or en for names from USDA FoodData Central. Otherwise null: the model or your data chose it."
+        },
+        "guardrails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GuardrailEvent"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Only present if not empty: what a fixed guardrail did or noticed in this call."
+        },
+        "profiles_applied": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+          },
+          "minItems": 1,
+          "description": "Only present if not empty: the profiles in effect, highest priority first."
         }
       }
     },
@@ -1019,8 +2344,8 @@
           "description": "A number is the corrected amount; then low = value = high. A range from the earlier response stays unchanged."
         },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
-          "description": "Values per 100 g, from the earlier response or, for a new or replaced item, from your data or a food search."
+          "$ref": "#/components/schemas/Per100gExtended",
+          "description": "Values per 100 g, from the earlier response or, for a new or replaced item, from your data or a food search. May carry the extra nutrients; they are then recalculated for the amount."
         },
         "source": {
           "$ref": "#/components/schemas/Source",
@@ -1048,9 +2373,68 @@
           "type": "string",
           "enum": [
             "de",
-            "en"
+            "en",
+            "fr",
+            "es",
+            "it",
+            "nl",
+            "pl",
+            "pt",
+            "sv",
+            "da",
+            "nb",
+            "fi"
           ],
-          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. Names are returned unchanged."
+          "description": "Language of the texts the API writes itself, for example message in errors. Messages exist in de and en; any other language gets en. Without it, en. Names are returned unchanged."
+        },
+        "energy_unit": {
+          "type": "string",
+          "enum": [
+            "kcal",
+            "kj"
+          ],
+          "default": "kcal",
+          "description": "kcal (default) or kj. With kj, every kcal gets a kj field next to it, calculated from per_100g; kcal stays. For search and barcode, kj is in per_100g."
+        },
+        "mass_unit": {
+          "type": "string",
+          "enum": [
+            "g",
+            "oz"
+          ],
+          "default": "g",
+          "description": "g (default) or oz. With oz, every grams gets an oz field next to it, and quantity is given in ounces; grams stays."
+        },
+        "volume_unit": {
+          "type": "string",
+          "enum": [
+            "ml"
+          ],
+          "description": "ml. Every item then carries an ml field: the amount in millilitres if the source lists its values per 100 ml, otherwise null. The API assumes no density."
+        },
+        "nutrients": {
+          "type": "string",
+          "enum": [
+            "macros",
+            "eu7",
+            "full"
+          ],
+          "default": "macros",
+          "description": "macros (default), eu7 or full. eu7 adds saturated fat, sugars and salt; for an estimate by the model an extra call estimates them, marked derived: \"model_extra\" and not measured. full exists only from data; what the source does not list is null."
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "item",
+            "field"
+          ],
+          "default": "item",
+          "description": "item (default): source per item. field: in addition the provenance object with source, date of the source and kind of derivation per numeric field."
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped."
         }
       }
     },
@@ -1091,8 +2475,35 @@
           "type": "number",
           "description": "Fat in grams, calculated from per_100g and grams.value."
         },
+        "kj": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kJ as a range, only with energy_unit kj. kj is calculated per bound from per_100g.kcal (times 4.184), not from the already rounded kcal; it can therefore differ by up to 3 from kcal times 4.184. per_100g.kj has one decimal. oz is grams divided by 28.349523125, to one decimal; total.oz comes from the sum of the grams. kcal and grams always stay in the response, the other units are added."
+        },
+        "oz": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Amount in ounces as a range, only with mass_unit oz: grams divided by 28.349523125, to one decimal."
+        },
+        "ml": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Amount in millilitres, only with volume_unit ml: a range if the source lists its values per 100 ml, otherwise null. Estimates by the model are always null here."
+        },
+        "nutrients": {
+          "$ref": "#/components/schemas/Nutrients",
+          "description": "Extra nutrients for grams.value, only with nutrients eu7 or full: the keys of the chosen scope. null: no data."
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/Provenance",
+          "description": "Only with provenance field: per numeric field of the item (grams, kcal, kj, oz, ml, macros, extra nutrients with a value) its source, the date of the source and the kind of derivation."
+        },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
+          "$ref": "#/components/schemas/Per100gExtended",
           "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
         },
         "source": {
@@ -1136,18 +2547,143 @@
           "type": "string",
           "enum": [
             "de",
-            "en"
+            "en",
+            "fr",
+            "es",
+            "it",
+            "nl",
+            "pl",
+            "pt",
+            "sv",
+            "da",
+            "nb",
+            "fi"
           ],
-          "description": "Language of the texts the API writes itself, for example message in errors. Without it, en. The language of name and dish is chosen by the model; it is neither fixed nor measured."
+          "description": "Language of the texts the API writes. For text and photo also the language of name and dish: if the name from the chain is not already in that language, it is translated in an extra call; the values stay untouched. Whether the name already fits is detected from its words, not measured. Names from your data and from databases are never translated. Messages exist in German and English, for any other language in English. Without it: messages in English, name as the model returns it."
         },
-        "tier": {
+        "energy_unit": {
           "type": "string",
           "enum": [
-            "economy",
-            "max"
+            "kcal",
+            "kj"
           ],
-          "default": "economy",
-          "description": "Tier of the call. Default economy. max is not available yet and is answered with 422 tier_unavailable; so is a tier that is not yet enabled for live keys."
+          "default": "kcal",
+          "description": "kcal (default) or kj. With kj, every kcal gets a kj field next to it, calculated from per_100g; kcal stays. For search and barcode, kj is in per_100g."
+        },
+        "mass_unit": {
+          "type": "string",
+          "enum": [
+            "g",
+            "oz"
+          ],
+          "default": "g",
+          "description": "g (default) or oz. With oz, every grams gets an oz field next to it, and quantity is given in ounces; grams stays."
+        },
+        "volume_unit": {
+          "type": "string",
+          "enum": [
+            "ml"
+          ],
+          "description": "ml. Every item then carries an ml field: the amount in millilitres if the source lists its values per 100 ml, otherwise null. The API assumes no density."
+        },
+        "nutrients": {
+          "type": "string",
+          "enum": [
+            "macros",
+            "eu7",
+            "full"
+          ],
+          "default": "macros",
+          "description": "macros (default), eu7 or full. eu7 adds saturated fat, sugars and salt; for an estimate by the model an extra call estimates them, marked derived: \"model_extra\" and not measured. full exists only from data; what the source does not list is null."
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "item",
+            "field"
+          ],
+          "default": "item",
+          "description": "item (default): source per item. field: in addition the provenance object with source, date of the source and kind of derivation per numeric field."
+        },
+        "hint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "Hint about the food, the portion or the preparation, at most 300 characters. Goes into the prompt; the response is then not measured."
+        },
+        "known_grams": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 5000,
+          "description": "Known weight in grams, above 0 and at most 5000. The values are recalculated for this weight after the chain; low, value and high are then equal and confidence is 1."
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country as ISO 3166-1 alpha-2 in capitals, for example DE. Goes into the prompt as context."
+        },
+        "meal": {
+          "type": "string",
+          "enum": [
+            "breakfast",
+            "lunch",
+            "dinner",
+            "snack"
+          ],
+          "description": "Meal: breakfast, lunch, dinner or snack. Goes into the prompt as context."
+        },
+        "venue": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Where the food is eaten, in words, for example canteen or restaurant, at most 100 characters. Goes into the prompt as context."
+        },
+        "review_threshold": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.99,
+          "description": "Number from 0.01 to 0.99 with at most two decimals. needs_review is then set because of the range when 1 − confidence is above the threshold; the other reasons for needs_review stay. Without it, the measured rule applies. How often needs_review is set with your own threshold is not measured."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "customer_inline",
+              "customer_catalog",
+              "bls",
+              "ciqual",
+              "fineli",
+              "livsmedelsverket",
+              "usda_fdc",
+              "open_food_facts",
+              "model"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "description": "Sources in order of priority, 1 to 5 entries without duplicates. If a match from your data provides the values, the reason is own_data, for a database (USDA FoodData Central, Open Food Facts, BLS, CIQUAL, Fineli, Livsmedelsverket) database. The default lists have more entries than you can name yourself."
+        },
+        "exclude_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "customer_inline",
+              "customer_catalog",
+              "bls",
+              "ciqual",
+              "fineli",
+              "livsmedelsverket",
+              "usda_fdc",
+              "open_food_facts",
+              "model"
+            ]
+          },
+          "maxItems": 9,
+          "uniqueItems": true,
+          "description": "Sources that are not used, without duplicates. Subtracted from sources."
         },
         "model": {
           "type": "string",
@@ -1160,6 +2696,34 @@
           },
           "maxItems": 200,
           "description": "Optional. Your own foods for this call only, for example house recipes, a menu or the range of a shop. For text and photo: if the name of the recognised dish matches one of your entries, its values per 100 g apply. Single components are not matched. How often this matching hits is not measured. Items based on them carry source customer_inline. Nothing of it is stored."
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "Your own instructions to the model, at most 1,000 characters, for example on naming or the kind of cuisine. Goes into the prompt; the response is then not measured. It cannot change the fixed guardrails."
+        },
+        "chain_version": {
+          "type": "string",
+          "enum": [
+            "2.1"
+          ],
+          "default": "2.1",
+          "description": "Pins the call to one version of the chain. Without it, the current one applies."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "light",
+            "max"
+          ],
+          "default": "light",
+          "description": "Tier of the call. Default light. max is not available yet: with a live key it is answered with 422 tier_unavailable, and so is a tier that is not yet enabled for live keys. With a test key, max returns the same fixed example response as light."
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped."
         }
       }
     },
@@ -1181,7 +2745,11 @@
         "beta",
         "tier",
         "model",
-        "prompt_version"
+        "prompt_version",
+        "measured",
+        "unmeasured_because",
+        "chain_version",
+        "name_lang"
       ],
       "description": "Response format of chain v2, planned; field names are preliminary and may change before launch.",
       "properties": {
@@ -1212,8 +2780,35 @@
           "type": "number",
           "description": "Fat in grams, calculated from per_100g and grams.value."
         },
+        "kj": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Energy in kJ as a range, only with energy_unit kj. kj is calculated per bound from per_100g.kcal (times 4.184), not from the already rounded kcal; it can therefore differ by up to 3 from kcal times 4.184. per_100g.kj has one decimal. oz is grams divided by 28.349523125, to one decimal; total.oz comes from the sum of the grams. kcal and grams always stay in the response, the other units are added."
+        },
+        "oz": {
+          "$ref": "#/components/schemas/Range",
+          "description": "Amount in ounces as a range, only with mass_unit oz: grams divided by 28.349523125, to one decimal."
+        },
+        "ml": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Amount in millilitres, only with volume_unit ml: a range if the source lists its values per 100 ml, otherwise null. Estimates by the model are always null here."
+        },
+        "nutrients": {
+          "$ref": "#/components/schemas/Nutrients",
+          "description": "Extra nutrients for grams.value, only with nutrients eu7 or full: the keys of the chosen scope. null: no data."
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/Provenance",
+          "description": "Only with provenance field: per numeric field of the item (grams, kcal, kj, oz, ml, macros, extra nutrients with a value) its source, the date of the source and the kind of derivation."
+        },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
+          "$ref": "#/components/schemas/Per100gExtended",
           "description": "Values per 100 g that the item is calculated with: from the model, calculated from kcal.value and grams.value (kcal to one decimal, macros to two); from your own data, the values of your entry. Send them to /v1/nutrition/correct to recalculate amounts."
         },
         "components": {
@@ -1249,7 +2844,7 @@
         "tier": {
           "type": "string",
           "enum": [
-            "economy",
+            "light",
             "max"
           ],
           "description": "Tier that answered the call."
@@ -1261,6 +2856,68 @@
         "prompt_version": {
           "type": "string",
           "description": "Version of chain and prompt that answered the call, today \"kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)\"."
+        },
+        "measured": {
+          "type": "boolean",
+          "description": "measured is true when grams, kcal, protein_g, carbs_g and fat_g come from the measured chain in its measured version and nothing has changed them. Our public accuracy figures apply only to responses with measured: true; otherwise unmeasured_because states the reasons."
+        },
+        "unmeasured_because": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UnmeasuredReason"
+          },
+          "uniqueItems": true,
+          "description": "Why the response is not measured; empty if measured is true. Order as in the list of reasons."
+        },
+        "chain_version": {
+          "type": "string",
+          "enum": [
+            "2.1"
+          ],
+          "description": "Version of the chain of this endpoint, today \"2.1\". With model: false no model ran; the field then names the current version of the endpoint."
+        },
+        "name_lang": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "de",
+                "en",
+                "fr",
+                "es",
+                "it",
+                "nl",
+                "pl",
+                "pt",
+                "sv",
+                "da",
+                "nb",
+                "fi"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Language of the name if known: the translated name (lang), or en for names from USDA FoodData Central. Otherwise null: the model or your data chose it."
+        },
+        "guardrails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GuardrailEvent"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Only present if not empty: what a fixed guardrail did or noticed in this call."
+        },
+        "profiles_applied": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+          },
+          "minItems": 1,
+          "description": "Only present if not empty: the profiles in effect, highest priority first."
         }
       }
     },
@@ -1274,14 +2931,26 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Name of the food. Names come as the source lists them: USDA FoodData Central only in English, so German search terms find little there. Nothing is translated."
+          "description": "Name of the food. Hosted sources: in the language of the call where available (German from BLS or translated), otherwise English. USDA FoodData Central only in English."
         },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
-          "description": "Values per 100 g. For drinks, Open Food Facts often lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion."
+          "$ref": "#/components/schemas/Per100gExtended",
+          "description": "Values per 100 g, or per 100 ml where per says so."
         },
         "source": {
           "$ref": "#/components/schemas/Source"
+        },
+        "per": {
+          "type": "string",
+          "enum": [
+            "100g",
+            "100ml"
+          ],
+          "description": "Only present where the source states the basis of per_100g: \"100ml\" for a product the source marks as a liquid. For drinks, Open Food Facts lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion, and the per field says \"100ml\" where the source marks the product as a liquid. If per is missing, the values are per 100 g or the source does not say."
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/Provenance",
+          "description": "Only with provenance field: source, date of the source and derivation per field of per_100g."
         },
         "license": {
           "type": "string",
@@ -1290,6 +2959,39 @@
         "attribution": {
           "type": "string",
           "description": "Attribution required by the license, for example for Open Food Facts (ODbL). Only where the license requires it."
+        },
+        "food_id": {
+          "type": "string",
+          "description": "Only for hosted sources: stable identifier, eu:<group> or <source>:<record>."
+        },
+        "also_in": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AlsoIn"
+          },
+          "description": "Only for hosted sources: further members of the group."
+        },
+        "attributions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Attribution"
+          },
+          "description": "Only for hosted sources and Open Food Facts: attribution per source that supplied a value, source of the base values first."
+        },
+        "data_version": {
+          "type": "string",
+          "description": "Only for hosted sources: version of the data snapshot, for example eu-2026-12-01."
+        },
+        "name_lang": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Only for hosted sources: language of name (de for BLS and translated names), null if unknown."
         }
       }
     },
@@ -1331,11 +3033,23 @@
           "description": "Product name, as entered in the source."
         },
         "per_100g": {
-          "$ref": "#/components/schemas/Macros",
-          "description": "Values per 100 g. For drinks, Open Food Facts often lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion."
+          "$ref": "#/components/schemas/Per100gExtended",
+          "description": "Values per 100 g, or per 100 ml where per says so."
         },
         "source": {
           "$ref": "#/components/schemas/Source"
+        },
+        "per": {
+          "type": "string",
+          "enum": [
+            "100g",
+            "100ml"
+          ],
+          "description": "Only present where the source states the basis of per_100g: \"100ml\" for a product the source marks as a liquid. For drinks, Open Food Facts lists the values per 100 ml; they are then returned unchanged in per_100g, without conversion, and the per field says \"100ml\" where the source marks the product as a liquid. If per is missing, the values are per 100 g or the source does not say."
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/Provenance",
+          "description": "Only with provenance field: source, date of the source and derivation per field of per_100g."
         },
         "license": {
           "type": "string",
@@ -1372,6 +3086,29 @@
           "type": "string",
           "description": "Optional. Barcode of the product: 8, 12, 13 or 14 digits.",
           "pattern": "^(\\d{8}|\\d{12}|\\d{13}|\\d{14})$"
+        },
+        "per": {
+          "type": "string",
+          "enum": [
+            "100g",
+            "100ml"
+          ],
+          "description": "Reference of the values: per 100 g (default) or per 100 ml."
+        },
+        "aliases": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Other names under which the entry is found (search and matching)."
+        },
+        "name_en": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "English name, optional."
         }
       }
     },
@@ -1396,6 +3133,29 @@
         },
         "per_100g": {
           "$ref": "#/components/schemas/Per100gInput"
+        },
+        "per": {
+          "type": "string",
+          "enum": [
+            "100g",
+            "100ml"
+          ],
+          "description": "Reference of the values: per 100 g (default) or per 100 ml."
+        },
+        "aliases": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Other names under which the entry is found (search and matching)."
+        },
+        "name_en": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "English name, optional."
         }
       }
     },
@@ -1481,7 +3241,14 @@
           }
         },
         "next_cursor": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "Only present when there are more entries. Send it as cursor."
         }
       }
@@ -1499,7 +3266,14 @@
           }
         },
         "next_cursor": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "Only present when there are more entries. Send it as cursor."
         }
       }
@@ -1706,6 +3480,29 @@
             "maintain"
           ],
           "description": "Goal."
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en",
+            "fr",
+            "es",
+            "it",
+            "nl",
+            "pl",
+            "pt",
+            "sv",
+            "da",
+            "nb",
+            "fi"
+          ],
+          "description": "Language of the texts the API writes itself, for example message in errors. Messages exist in de and en; any other language gets en. Without it, en. Names are returned unchanged."
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+          "description": "Name of a profile of your account. Priority per field: request, then this profile, then the profile of the key, then the default. Fields from a profile that an endpoint does not know are skipped."
         }
       }
     },
@@ -1775,8 +3572,14 @@
                 "invalid_key",
                 "insufficient_credits",
                 "daily_limit_reached",
+                "monthly_budget_reached",
+                "key_budget_reached",
                 "account_suspended",
+                "key_expired",
+                "key_scope_denied",
+                "ip_not_allowed",
                 "not_found",
+                "idempotency_in_progress",
                 "invalid_request",
                 "tier_unavailable",
                 "rate_limited",
@@ -1795,6 +3598,53 @@
               "description": "ID of the call, also sent as the X-Request-Id header."
             }
           }
+        }
+      }
+    },
+    "Attribution": {
+      "type": "object",
+      "required": [
+        "source",
+        "license",
+        "license_url",
+        "text",
+        "modified"
+      ],
+      "additionalProperties": false,
+      "description": "One line per source that supplied a returned value. Hosted sources under CC BY 4.0 or Licence Ouverte require naming the source.",
+      "properties": {
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "license": {
+          "type": "string"
+        },
+        "license_url": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "modified": {
+          "type": "boolean",
+          "description": "true: Flexen normalised the values of this source (units, energy, carbohydrates, traces, names, groups)."
+        }
+      }
+    },
+    "AlsoIn": {
+      "type": "object",
+      "required": [
+        "source",
+        "record"
+      ],
+      "additionalProperties": false,
+      "description": "The same food in another hosted source (deduplicated, not returned as its own result).",
+      "properties": {
+        "source": {
+          "$ref": "#/components/schemas/Source"
+        },
+        "record": {
+          "type": "string"
         }
       }
     }
@@ -1821,14 +3671,44 @@
       "message": "The daily spending limit of your account has been reached."
     },
     {
+      "status": 402,
+      "code": "monthly_budget_reached",
+      "message": "The monthly budget of your account has been reached. It applies until the end of the calendar month (UTC); you raise or remove it in the console."
+    },
+    {
+      "status": 402,
+      "code": "key_budget_reached",
+      "message": "The monthly limit of this key has been reached. It applies until the end of the calendar month (UTC); you change it on the key in the console."
+    },
+    {
       "status": 403,
       "code": "account_suspended",
       "message": "Your account is suspended, for example because of a payment dispute. Contact us; credits and receipts stay readable in the console."
     },
     {
+      "status": 403,
+      "code": "key_expired",
+      "message": "The key has expired. Create a new one in the console or extend its expiry date."
+    },
+    {
+      "status": 403,
+      "code": "key_scope_denied",
+      "message": "This key may not call this endpoint. You set the allowed endpoints on the key in the console."
+    },
+    {
+      "status": 403,
+      "code": "ip_not_allowed",
+      "message": "The call comes from an IP address that is not allowed for this key. You set the allowed addresses on the key in the console."
+    },
+    {
       "status": 404,
       "code": "not_found",
       "message": "What you asked for does not exist, for example no product for this barcode or no entry with this id in your catalog."
+    },
+    {
+      "status": 409,
+      "code": "idempotency_in_progress",
+      "message": "A call with the same Idempotency-Key and the same request is still running. Wait a moment and repeat it (Retry-After). Nothing is deducted."
     },
     {
       "status": 422,
@@ -1876,6 +3756,11 @@
       "name": "X-Request-Id",
       "type": "string",
       "alsoWithoutKey": true
+    },
+    {
+      "name": "Idempotent-Replayed",
+      "type": "string",
+      "alsoWithoutKey": false
     }
   ],
   "limits": {
@@ -1905,20 +3790,34 @@
       13,
       14
     ],
-    "searchQueryMaxChars": 100
+    "searchQueryMaxChars": 100,
+    "hintMaxChars": 300,
+    "instructionsMaxChars": 1000,
+    "venueMaxChars": 100,
+    "knownGramsMax": 5000,
+    "reviewThreshold": {
+      "min": 0.01,
+      "max": 0.99
+    },
+    "extrasSeconds": 4,
+    "sourcesMax": 5
   },
   "sourceIds": [
     "customer_inline",
     "customer_catalog",
     "usda_fdc",
     "open_food_facts",
-    "model"
+    "model",
+    "bls",
+    "ciqual",
+    "fineli",
+    "livsmedelsverket"
   ],
   "tierIds": [
-    "economy",
+    "light",
     "max"
   ],
-  "defaultTier": "economy",
+  "defaultTier": "light",
   "promptVersion": {
     "nutrition-text": "kette-v2.2-text (Prompt roh-v1, GLM-5.3-Flash, 2 von 2)",
     "nutrition-photo": "kette-v2 (Prompt roh-v1, GLM-5.3-Flash, 4 von 5)"

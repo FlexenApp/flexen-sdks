@@ -88,6 +88,30 @@ class AccountSuspendedError(APIError):
     """403 account_suspended"""
 
 
+class MonthlyBudgetReachedError(APIError):
+    """402 monthly_budget_reached: the monthly budget of the account has been reached (until the end of the calendar month, UTC)."""
+
+
+class KeyBudgetReachedError(APIError):
+    """402 key_budget_reached: the monthly limit of this key has been reached."""
+
+
+class KeyExpiredError(APIError):
+    """403 key_expired: the key has passed its expiry date."""
+
+
+class KeyScopeDeniedError(APIError):
+    """403 key_scope_denied: this key may not call this endpoint."""
+
+
+class IpNotAllowedError(APIError):
+    """403 ip_not_allowed: the call comes from an IP address that is not allowed for this key."""
+
+
+class IdempotencyInProgressError(APIError):
+    """409 idempotency_in_progress: a call with the same Idempotency-Key is still running. Not retried; see retry_after_seconds."""
+
+
 class NotFoundError(APIError):
     """404 not_found"""
 
@@ -123,6 +147,12 @@ ERROR_CLASS_BY_CODE: dict[str, type[APIError]] = {
     "insufficient_credits": InsufficientCreditsError,
     "daily_limit_reached": DailyLimitReachedError,
     "account_suspended": AccountSuspendedError,
+    "monthly_budget_reached": MonthlyBudgetReachedError,
+    "key_budget_reached": KeyBudgetReachedError,
+    "key_expired": KeyExpiredError,
+    "key_scope_denied": KeyScopeDeniedError,
+    "ip_not_allowed": IpNotAllowedError,
+    "idempotency_in_progress": IdempotencyInProgressError,
     "not_found": NotFoundError,
     "invalid_request": InvalidRequestError,
     "tier_unavailable": TierUnavailableError,
@@ -138,6 +168,7 @@ _ERROR_CLASS_BY_STATUS: dict[int, type[APIError]] = {
     402: InsufficientCreditsError,
     403: AccountSuspendedError,
     404: NotFoundError,
+    409: IdempotencyInProgressError,
     422: InvalidRequestError,
     429: RateLimitError,
     500: InternalServerError,

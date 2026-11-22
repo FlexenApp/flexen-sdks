@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { Flexen, NOT_AVAILABLE, OPERATIONS, type FlexenResponse, type OperationId } from '../src/index.js'
+import { DEFAULT_TIER, Flexen, NOT_AVAILABLE, OPERATIONS, TIERS, TIER_IDS, TierUnavailableError, type FlexenResponse, type OperationId } from '../src/index.js'
 import { EXAMPLES, OK_HEADERS, TEST_KEY, startFake, type Fake } from './fake-server.js'
 
 let fake: Fake
@@ -110,6 +110,25 @@ describe('parameters', () => {
     expect(fake.requests[0]!.url).toBe('/v1/catalog/foods')
   })
 
+  it('sends list parameters comma-separated (sources, exclude_sources)', async () => {
+    fake.queue({ status: 200, headers: OK_HEADERS, json: ex('foodsSearch').response })
+    await client.foods.search({ q: 'Skyr', sources: ['customer_catalog', 'usda_fdc'], exclude_sources: ['open_food_facts'], nutrients: 'eu7' })
+    expect(fake.requests[0]!.query).toEqual({ q: 'Skyr', sources: 'customer_catalog,usda_fdc', exclude_sources: 'open_food_facts', nutrients: 'eu7' })
+  })
+
+  it('passes the per-call settings of nutrition.text through unchanged', async () => {
+    fake.queue({ status: 200, headers: OK_HEADERS, json: ex('nutritionText').response })
+    const req = { text: 'Skyr mit Beeren', lang: 'sv', energy_unit: 'kj', nutrients: 'eu7', provenance: 'field', hint: 'ohne Zucker', known_grams: 250, country: 'SE', meal: 'breakfast', review_threshold: 0.4, sources: ['usda_fdc', 'model'], profile: 'app-se' } as const
+    await client.nutrition.text({ ...req, sources: [...req.sources] })
+    expect(fake.requests[0]!.json).toEqual(req)
+  })
+
+  it('model: false asks for a call without the model', async () => {
+    fake.queue({ status: 200, headers: OK_HEADERS, json: ex('nutritionText').response })
+    await client.nutrition.text({ text: 'Skyr', model: false, known_grams: 150, sources: ['usda_fdc'] })
+    expect((fake.requests[0]!.json as { model: unknown }).model).toBe(false)
+  })
+
   it('rejects an empty id before sending', async () => {
     await expect(client.catalog.foods.get('')).rejects.toThrow(/id is required/)
     expect(fake.requests).toHaveLength(0)
@@ -135,6 +154,39 @@ describe('catalog iteration', () => {
     for await (const f of client.catalog.foods.iterate({ q: 'x' })) ids.push(f.id)
     expect(ids).toEqual(['a', 'b', 'c'])
     expect(fake.requests.map((r) => r.url)).toEqual(['/v1/catalog/foods?q=x', '/v1/catalog/foods?q=x&cursor=c1'])
+  })
+})
+
+describe('idempotency', () => {
+  it('reports a replayed answer', async () => {
+    fake.queue({ status: 200, headers: { ...OK_HEADERS, 'X-Credits-Charged': '0', 'Idempotent-Replayed': 'true' }, json: ex('goalsCalculate').response })
+    const res = await client.goals.calculate(body('goalsCalculate'), { idempotencyKey: 'k-1' })
+    expect(fake.requests[0]!.headers['idempotency-key']).toBe('k-1')
+    expect(res.idempotentReplayed).toBe(true)
+    expect(res.creditsCharged).toBe(0)
+  })
+
+  it('is false without the header', async () => {
+    fake.queue({ status: 200, headers: OK_HEADERS, json: { credits_remaining: 5 } })
+    expect((await client.account.balance()).idempotentReplayed).toBe(false)
+  })
+})
+
+describe('tiers', () => {
+  it('light is the default tier and max is in the contract but not available yet', () => {
+    expect(DEFAULT_TIER).toBe('light')
+    expect(TIER_IDS).toEqual(['light', 'max'])
+    for (const op of ['nutritionText', 'nutritionPhoto'] as const) {
+      expect(TIERS[op].find((t) => t.id === 'max')!.state).toBe('later')
+      expect(TIERS[op].find((t) => t.id === 'light')!.state).toBe('launch')
+    }
+  })
+
+  it('max with a live key surfaces as TierUnavailableError', async () => {
+    fake.queue({ status: 422, headers: { 'X-Request-Id': 'req_t', 'X-Credits-Charged': '0', 'X-Credits-Remaining': '9' }, json: { error: { code: 'tier_unavailable', message: 'max is not available yet', request_id: 'req_t' } } })
+    const err = await client.nutrition.text({ text: 'Apfel', tier: 'max' }).catch((e: unknown) => e)
+    expect(err).toBeInstanceOf(TierUnavailableError)
+    expect((fake.requests[0]!.json as { tier: string }).tier).toBe('max')
   })
 })
 

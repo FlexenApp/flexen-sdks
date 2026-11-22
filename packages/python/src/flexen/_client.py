@@ -55,8 +55,16 @@ from ._generated import (
         ProductResponse,
     )
 
-Lang = Literal["de", "en"]
-Tier = Literal["economy", "max"]
+Lang = Literal["de", "en", "fr", "es", "it", "nl", "pl", "pt", "sv", "da", "nb", "fi"]
+#: "light" is the default. "max" is not available yet: with a live key the API answers 422 tier_unavailable (TierUnavailableError).
+Tier = Literal["light", "max"]
+EnergyUnit = Literal["kcal", "kj"]
+MassUnit = Literal["g", "oz"]
+VolumeUnit = Literal["ml"]
+Nutrients = Literal["macros", "eu7", "full"]
+Provenance = Literal["item", "field"]
+Meal = Literal["breakfast", "lunch", "dinner", "snack"]
+SourceId = Literal["customer_inline", "customer_catalog", "bls", "ciqual", "fineli", "livsmedelsverket", "usda_fdc", "open_food_facts", "model"]
 Headers = Mapping[str, str]
 
 
@@ -183,16 +191,37 @@ class Nutrition:
         text: str,
         *,
         lang: Lang | None = None,
-        tier: Tier | None = None,
-        model: str | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        hint: str | None = None,
+        known_grams: float | None = None,
+        country: str | None = None,
+        meal: Meal | None = None,
+        venue: str | None = None,
+        review_threshold: float | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        model: str | Literal[False] | None = None,
         custom_foods: Sequence[CustomFood | Mapping[str, Any]] | None = None,
+        instructions: str | None = None,
+        chain_version: str | None = None,
+        tier: Tier | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[NutritionTextResponse]:
-        """POST /v1/nutrition/text: free text to amount, calories and macros."""
-        body = {"text": text, "lang": lang, "tier": tier, "model": model, "custom_foods": custom_foods}
+        """POST /v1/nutrition/text: free text to amount, calories and macros.
+
+        tier: "light" is the default; "max" is not available yet (422 tier_unavailable, TierUnavailableError).
+        model=False works without the model, from the sources only. hint, instructions, country, meal, venue and
+        known_grams make the response "not measured" (measured: false, unmeasured_because).
+        """
+        body = {"text": text, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "hint": hint, "known_grams": known_grams, "country": country, "meal": meal, "venue": venue, "review_threshold": review_threshold, "sources": sources, "exclude_sources": exclude_sources, "model": model, "custom_foods": custom_foods, "instructions": instructions, "chain_version": chain_version, "tier": tier, "profile": profile}
         return self._c._call("nutritionText", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("nutritionPhoto", extra=("image_path", "image_bytes"))
@@ -203,9 +232,25 @@ class Nutrition:
         image_bytes: ImageBytes | None = None,
         image_base64: str | None = None,
         lang: Lang | None = None,
-        tier: Tier | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        hint: str | None = None,
+        known_grams: float | None = None,
+        country: str | None = None,
+        meal: Meal | None = None,
+        venue: str | None = None,
+        review_threshold: float | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
         model: str | None = None,
         custom_foods: Sequence[CustomFood | Mapping[str, Any]] | None = None,
+        instructions: str | None = None,
+        chain_version: str | None = None,
+        tier: Tier | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
@@ -214,10 +259,11 @@ class Nutrition:
         """POST /v1/nutrition/photo (beta). Pass exactly one of image_path, image_bytes or image_base64.
 
         The photo may have at most LIMITS["imageMaxMiB"] MiB before Base64 encoding; larger photos raise
-        InvalidInputError without a request.
+        InvalidInputError without a request. tier: "light" is the default; "max" is not available yet
+        (422 tier_unavailable, TierUnavailableError).
         """
         b64 = to_image_base64(image_path=image_path, image_bytes=image_bytes, image_base64=image_base64)
-        body = {"image_base64": b64, "lang": lang, "tier": tier, "model": model, "custom_foods": custom_foods}
+        body = {"image_base64": b64, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "hint": hint, "known_grams": known_grams, "country": country, "meal": meal, "venue": venue, "review_threshold": review_threshold, "sources": sources, "exclude_sources": exclude_sources, "model": model, "custom_foods": custom_foods, "instructions": instructions, "chain_version": chain_version, "tier": tier, "profile": profile}
         return self._c._call("nutritionPhoto", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("nutritionCorrect")
@@ -226,13 +272,20 @@ class Nutrition:
         items: Sequence[CorrectItemInput | Mapping[str, Any]],
         *,
         lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[NutritionCorrectResponse]:
-        """POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs. Price still open in the contract."""
-        return self._c._call("nutritionCorrect", body={"items": items, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        """POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs, 0 credits."""
+        body = {"items": items, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "profile": profile}
+        return self._c._call("nutritionCorrect", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 
 class Foods:
@@ -241,17 +294,43 @@ class Foods:
 
     @operation("foodsSearch")
     def search(
-        self, q: str, *, lang: Lang | None = None, idempotency_key: str | None = None, timeout: float | None = None, max_retries: int | None = None, extra_headers: Headers | None = None
+        self,
+        q: str,
+        *,
+        lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        profile: str | None = None,
+        idempotency_key: str | None = None,
+        timeout: float | None = None,
+        max_retries: int | None = None,
+        extra_headers: Headers | None = None,
     ) -> FlexenResponse[FoodSearchResponse]:
-        """GET /v1/foods/search: your catalog first, then open sources."""
-        return self._c._call("foodsSearch", params={"q": q, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        """GET /v1/foods/search: your catalog first, then open sources. sources and exclude_sources go comma-separated."""
+        return self._c._call("foodsSearch", params={"q": q, "lang": lang, "energy_unit": energy_unit, "nutrients": nutrients, "provenance": provenance, "sources": sources, "exclude_sources": exclude_sources, "profile": profile}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("foodsBarcode")
     def barcode(
-        self, code: str, *, lang: Lang | None = None, idempotency_key: str | None = None, timeout: float | None = None, max_retries: int | None = None, extra_headers: Headers | None = None
+        self,
+        code: str,
+        *,
+        lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        profile: str | None = None,
+        idempotency_key: str | None = None,
+        timeout: float | None = None,
+        max_retries: int | None = None,
+        extra_headers: Headers | None = None,
     ) -> FlexenResponse[ProductResponse]:
         """GET /v1/foods/barcode/{code}: 8, 12, 13 or 14 digits. NotFoundError if no product is known."""
-        return self._c._call("foodsBarcode", params={"code": code, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        return self._c._call("foodsBarcode", params={"code": code, "lang": lang, "energy_unit": energy_unit, "nutrients": nutrients, "provenance": provenance, "sources": sources, "exclude_sources": exclude_sources, "profile": profile}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 
 class Goals:
@@ -268,13 +347,15 @@ class Goals:
         age: int,
         activity_level: Literal["sedentary", "lightly_active", "active", "very_active"],
         goal: Literal["lose_weight", "build_muscle", "gain_weight", "endurance", "maintain"],
+        lang: Lang | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[GoalsResponse]:
         """POST /v1/goals/calculate: calories, macros and water from body data and goal (Mifflin-St Jeor)."""
-        body = {"sex": sex, "weight_kg": weight_kg, "height_cm": height_cm, "age": age, "activity_level": activity_level, "goal": goal}
+        body = {"sex": sex, "weight_kg": weight_kg, "height_cm": height_cm, "age": age, "activity_level": activity_level, "goal": goal, "lang": lang, "profile": profile}
         return self._c._call("goalsCalculate", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 
@@ -464,16 +545,37 @@ class AsyncNutrition:
         text: str,
         *,
         lang: Lang | None = None,
-        tier: Tier | None = None,
-        model: str | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        hint: str | None = None,
+        known_grams: float | None = None,
+        country: str | None = None,
+        meal: Meal | None = None,
+        venue: str | None = None,
+        review_threshold: float | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        model: str | Literal[False] | None = None,
         custom_foods: Sequence[CustomFood | Mapping[str, Any]] | None = None,
+        instructions: str | None = None,
+        chain_version: str | None = None,
+        tier: Tier | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[NutritionTextResponse]:
-        """POST /v1/nutrition/text: free text to amount, calories and macros."""
-        body = {"text": text, "lang": lang, "tier": tier, "model": model, "custom_foods": custom_foods}
+        """POST /v1/nutrition/text: free text to amount, calories and macros.
+
+        tier: "light" is the default; "max" is not available yet (422 tier_unavailable, TierUnavailableError).
+        model=False works without the model, from the sources only. hint, instructions, country, meal, venue and
+        known_grams make the response "not measured" (measured: false, unmeasured_because).
+        """
+        body = {"text": text, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "hint": hint, "known_grams": known_grams, "country": country, "meal": meal, "venue": venue, "review_threshold": review_threshold, "sources": sources, "exclude_sources": exclude_sources, "model": model, "custom_foods": custom_foods, "instructions": instructions, "chain_version": chain_version, "tier": tier, "profile": profile}
         return await self._c._call("nutritionText", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("nutritionPhoto", extra=("image_path", "image_bytes"))
@@ -484,17 +586,38 @@ class AsyncNutrition:
         image_bytes: ImageBytes | None = None,
         image_base64: str | None = None,
         lang: Lang | None = None,
-        tier: Tier | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        hint: str | None = None,
+        known_grams: float | None = None,
+        country: str | None = None,
+        meal: Meal | None = None,
+        venue: str | None = None,
+        review_threshold: float | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
         model: str | None = None,
         custom_foods: Sequence[CustomFood | Mapping[str, Any]] | None = None,
+        instructions: str | None = None,
+        chain_version: str | None = None,
+        tier: Tier | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[NutritionPhotoResponse]:
-        """POST /v1/nutrition/photo (beta). Pass exactly one of image_path, image_bytes or image_base64."""
+        """POST /v1/nutrition/photo (beta). Pass exactly one of image_path, image_bytes or image_base64.
+
+        The photo may have at most LIMITS["imageMaxMiB"] MiB before Base64 encoding; larger photos raise
+        InvalidInputError without a request. tier: "light" is the default; "max" is not available yet
+        (422 tier_unavailable, TierUnavailableError).
+        """
         b64 = await anyio.to_thread.run_sync(lambda: to_image_base64(image_path=image_path, image_bytes=image_bytes, image_base64=image_base64))
-        body = {"image_base64": b64, "lang": lang, "tier": tier, "model": model, "custom_foods": custom_foods}
+        body = {"image_base64": b64, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "hint": hint, "known_grams": known_grams, "country": country, "meal": meal, "venue": venue, "review_threshold": review_threshold, "sources": sources, "exclude_sources": exclude_sources, "model": model, "custom_foods": custom_foods, "instructions": instructions, "chain_version": chain_version, "tier": tier, "profile": profile}
         return await self._c._call("nutritionPhoto", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("nutritionCorrect")
@@ -503,13 +626,20 @@ class AsyncNutrition:
         items: Sequence[CorrectItemInput | Mapping[str, Any]],
         *,
         lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        mass_unit: MassUnit | None = None,
+        volume_unit: VolumeUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[NutritionCorrectResponse]:
-        """POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs."""
-        return await self._c._call("nutritionCorrect", body={"items": items, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        """POST /v1/nutrition/correct: recalculate items with corrected amounts. No model runs, 0 credits."""
+        body = {"items": items, "lang": lang, "energy_unit": energy_unit, "mass_unit": mass_unit, "volume_unit": volume_unit, "nutrients": nutrients, "provenance": provenance, "profile": profile}
+        return await self._c._call("nutritionCorrect", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 
 class AsyncFoods:
@@ -518,17 +648,43 @@ class AsyncFoods:
 
     @operation("foodsSearch")
     async def search(
-        self, q: str, *, lang: Lang | None = None, idempotency_key: str | None = None, timeout: float | None = None, max_retries: int | None = None, extra_headers: Headers | None = None
+        self,
+        q: str,
+        *,
+        lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        profile: str | None = None,
+        idempotency_key: str | None = None,
+        timeout: float | None = None,
+        max_retries: int | None = None,
+        extra_headers: Headers | None = None,
     ) -> FlexenResponse[FoodSearchResponse]:
-        """GET /v1/foods/search: your catalog first, then open sources."""
-        return await self._c._call("foodsSearch", params={"q": q, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        """GET /v1/foods/search: your catalog first, then open sources. sources and exclude_sources go comma-separated."""
+        return await self._c._call("foodsSearch", params={"q": q, "lang": lang, "energy_unit": energy_unit, "nutrients": nutrients, "provenance": provenance, "sources": sources, "exclude_sources": exclude_sources, "profile": profile}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
     @operation("foodsBarcode")
     async def barcode(
-        self, code: str, *, lang: Lang | None = None, idempotency_key: str | None = None, timeout: float | None = None, max_retries: int | None = None, extra_headers: Headers | None = None
+        self,
+        code: str,
+        *,
+        lang: Lang | None = None,
+        energy_unit: EnergyUnit | None = None,
+        nutrients: Nutrients | None = None,
+        provenance: Provenance | None = None,
+        sources: Sequence[SourceId] | None = None,
+        exclude_sources: Sequence[SourceId] | None = None,
+        profile: str | None = None,
+        idempotency_key: str | None = None,
+        timeout: float | None = None,
+        max_retries: int | None = None,
+        extra_headers: Headers | None = None,
     ) -> FlexenResponse[ProductResponse]:
-        """GET /v1/foods/barcode/{code}. NotFoundError if no product is known."""
-        return await self._c._call("foodsBarcode", params={"code": code, "lang": lang}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
+        """GET /v1/foods/barcode/{code}: 8, 12, 13 or 14 digits. NotFoundError if no product is known."""
+        return await self._c._call("foodsBarcode", params={"code": code, "lang": lang, "energy_unit": energy_unit, "nutrients": nutrients, "provenance": provenance, "sources": sources, "exclude_sources": exclude_sources, "profile": profile}, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 
 class AsyncGoals:
@@ -545,13 +701,15 @@ class AsyncGoals:
         age: int,
         activity_level: Literal["sedentary", "lightly_active", "active", "very_active"],
         goal: Literal["lose_weight", "build_muscle", "gain_weight", "endurance", "maintain"],
+        lang: Lang | None = None,
+        profile: str | None = None,
         idempotency_key: str | None = None,
         timeout: float | None = None,
         max_retries: int | None = None,
         extra_headers: Headers | None = None,
     ) -> FlexenResponse[GoalsResponse]:
         """POST /v1/goals/calculate."""
-        body = {"sex": sex, "weight_kg": weight_kg, "height_cm": height_cm, "age": age, "activity_level": activity_level, "goal": goal}
+        body = {"sex": sex, "weight_kg": weight_kg, "height_cm": height_cm, "age": age, "activity_level": activity_level, "goal": goal, "lang": lang, "profile": profile}
         return await self._c._call("goalsCalculate", body=body, opts=_opts(idempotency_key, timeout, max_retries, extra_headers))
 
 

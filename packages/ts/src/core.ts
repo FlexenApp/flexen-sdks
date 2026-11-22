@@ -51,7 +51,7 @@ export interface RequestOptions {
   timeoutMs?: number
   /** Overrides the client's maxRetries for this call. */
   maxRetries?: number
-  /** Sent as Idempotency-Key header, the same on every retry. The API honours it from Plan 05 on; before, it is ignored. */
+  /** Sent as Idempotency-Key header, the same on every retry. The API keeps the answer for 24 hours; a repeat is marked idempotentReplayed and costs nothing. */
   idempotencyKey?: string
   /** Extra headers for this call. */
   headers?: Record<string, string>
@@ -67,6 +67,8 @@ export interface FlexenResponse<T> {
   creditsCharged: number | null
   /** X-Credits-Remaining: balance after the call; credits reserved for running calls are not yet deducted. */
   creditsRemaining: number | null
+  /** Idempotent-Replayed: true if the API answered from an earlier call with the same Idempotency-Key (nothing was deducted again). */
+  idempotentReplayed: boolean
   headers: Headers
 }
 
@@ -183,7 +185,8 @@ export class Transport {
     const q = new URLSearchParams()
     for (const name of def.queryParams as readonly string[]) {
       const v = params[name]
-      if (v !== undefined && v !== null) q.set(name, String(v))
+      /* Lists go comma-separated (form style without explode), as the contract says: sources=customer_catalog,usda_fdc */
+      if (v !== undefined && v !== null) q.set(name, Array.isArray(v) ? v.join(',') : String(v))
     }
     const qs = q.toString()
     return `${this.baseUrl}${path}${qs ? `?${qs}` : ''}`
@@ -253,6 +256,7 @@ export class Transport {
             requestId: res.headers.get('X-Request-Id'),
             creditsCharged: intHeader(res.headers, 'X-Credits-Charged'),
             creditsRemaining: intHeader(res.headers, 'X-Credits-Remaining'),
+            idempotentReplayed: res.headers.get('Idempotent-Replayed') === 'true',
             headers: res.headers,
           }
         }

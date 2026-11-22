@@ -6,7 +6,7 @@ from typing import Any, Callable
 import pytest
 
 from conftest import EXAMPLES, OK_HEADERS, TEST_KEY, Fake, Reply
-from flexen import NOT_AVAILABLE, OPERATIONS, AsyncFlexen, Flexen, InvalidInputError
+from flexen import DEFAULT_TIER, NOT_AVAILABLE, OPERATIONS, TIER_IDS, TIERS, AsyncFlexen, Flexen, InvalidInputError, TierUnavailableError
 
 ex = EXAMPLES
 RECIPE = {"id": "r1", "name": "Linsensuppe", "per_100g": {"kcal": 92, "protein_g": 5.4, "carbs_g": 11.8, "fat_g": 2.0}}
@@ -14,7 +14,7 @@ RECIPE = {"id": "r1", "name": "Linsensuppe", "per_100g": {"kcal": 92, "protein_g
 #: One call per contract operation. test_every_operation_has_a_call fails when the contract gains an operation.
 CALLS: dict[str, Callable[[Flexen], Any]] = {
     "nutritionText": lambda c: c.nutrition.text(**ex["nutritionText"]["request"]),
-    "nutritionPhoto": lambda c: c.nutrition.photo(image_base64="aGVsbG8=", lang="de", tier="economy"),
+    "nutritionPhoto": lambda c: c.nutrition.photo(image_base64="aGVsbG8=", lang="de", tier="light"),
     "nutritionCorrect": lambda c: c.nutrition.correct(**ex["nutritionCorrect"]["request"]),
     "foodsSearch": lambda c: c.foods.search(**ex["foodsSearch"]["params"]),
     "foodsBarcode": lambda c: c.foods.barcode(**ex["foodsBarcode"]["params"]),
@@ -53,6 +53,15 @@ def expected_path(op: str) -> str:
     return path
 
 
+def without_nulls(v: Any) -> Any:
+    """The contract's examples spell out null fields (name_lang: null); the dump above leaves None out."""
+    if isinstance(v, dict):
+        return {k: without_nulls(x) for k, x in v.items() if x is not None}
+    if isinstance(v, list):
+        return [without_nulls(x) for x in v]
+    return v
+
+
 def test_every_operation_has_a_call() -> None:
     assert set(CALLS) == set(OPERATIONS)
 
@@ -78,7 +87,7 @@ def test_operation(fake: Fake, op: str) -> None:
     else:
         assert req.body == b""
     data = res.data.model_dump(mode="json", by_alias=True, exclude_none=True)
-    assert json.loads(json.dumps(data)) == response
+    assert json.loads(json.dumps(data)) == without_nulls(response)
     assert res.status_code == 200
     assert res.request_id == "req_test_1"
     assert res.credits_charged == 1
@@ -113,6 +122,54 @@ def test_unset_query_parameters_are_left_out(fake: Fake) -> None:
     with Flexen(TEST_KEY, base_url=fake.url) as c:
         c.catalog.foods.list()
     assert fake.requests[0].url == "/v1/catalog/foods"
+
+
+def test_list_parameters_go_comma_separated(fake: Fake) -> None:
+    fake.queue(Reply(200, ex["foodsSearch"]["response"], headers=OK_HEADERS))
+    with Flexen(TEST_KEY, base_url=fake.url) as c:
+        c.foods.search("Skyr", sources=["customer_catalog", "usda_fdc"], exclude_sources=["open_food_facts"], nutrients="eu7")
+    assert fake.requests[0].query == {"q": "Skyr", "sources": "customer_catalog,usda_fdc", "exclude_sources": "open_food_facts", "nutrients": "eu7"}
+
+
+def test_text_settings_are_sent_unchanged(fake: Fake) -> None:
+    settings: dict[str, Any] = {
+        "lang": "sv", "energy_unit": "kj", "nutrients": "eu7", "provenance": "field", "hint": "ohne Zucker", "known_grams": 250.0,
+        "country": "SE", "meal": "breakfast", "review_threshold": 0.4, "sources": ["usda_fdc", "model"], "profile": "app-se",
+    }
+    fake.queue(Reply(200, ex["nutritionText"]["response"], headers=OK_HEADERS))
+    with Flexen(TEST_KEY, base_url=fake.url) as c:
+        c.nutrition.text("Skyr mit Beeren", **settings)
+    assert fake.requests[0].json == {"text": "Skyr mit Beeren", **settings}
+
+
+def test_model_false_is_sent(fake: Fake) -> None:
+    fake.queue(Reply(200, ex["nutritionText"]["response"], headers=OK_HEADERS))
+    with Flexen(TEST_KEY, base_url=fake.url) as c:
+        c.nutrition.text("Skyr", model=False, known_grams=150, sources=["usda_fdc"])
+    assert fake.requests[0].json["model"] is False
+
+
+def test_idempotent_replay_is_reported(fake: Fake) -> None:
+    fake.queue(Reply(200, ex["goalsCalculate"]["response"], headers={**OK_HEADERS, "X-Credits-Charged": "0", "Idempotent-Replayed": "true"}))
+    with Flexen(TEST_KEY, base_url=fake.url) as c:
+        res = c.goals.calculate(**ex["goalsCalculate"]["request"], idempotency_key="k-1")
+    assert fake.requests[0].headers["idempotency-key"] == "k-1"
+    assert (res.idempotent_replayed, res.credits_charged) == (True, 0)
+
+
+def test_max_is_in_the_contract_but_not_available_yet() -> None:
+    assert (DEFAULT_TIER, TIER_IDS) == ("light", ("light", "max"))
+    for op in ("nutritionText", "nutritionPhoto"):
+        states = {t["id"]: t["state"] for t in TIERS[op]}
+        assert states == {"light": "launch", "max": "later"}
+
+
+def test_max_with_a_live_key_raises_tier_unavailable(fake: Fake) -> None:
+    fake.queue(Reply(422, {"error": {"code": "tier_unavailable", "message": "max is not available yet", "request_id": "req_t"}}, headers={"X-Request-Id": "req_t"}))
+    with Flexen(TEST_KEY, base_url=fake.url) as c:
+        with pytest.raises(TierUnavailableError):
+            c.nutrition.text("Apfel", tier="max")
+    assert fake.requests[0].json["tier"] == "max"
 
 
 def test_invalid_input_is_rejected_before_sending(fake: Fake) -> None:
